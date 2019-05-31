@@ -11,6 +11,7 @@
 #include "HeadMountedDisplayFunctionLibrary.h"
 #include "Materials/Material.h"
 #include "Engine/World.h"
+#include "Component/MyHealthComponent.h"
 
 AtestingCharacter::AtestingCharacter()
 {
@@ -87,4 +88,11 @@ void AtestingCharacter::Tick(float DeltaSeconds)
 			CursorToWorld->SetWorldRotation(CursorR);
 		}
 	}
+
+	UMyHealthComponent* Myhealth;
+	Myhealth->damage(3);
 }
+
+
+
+
