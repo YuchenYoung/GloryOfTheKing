@@ -6,6 +6,8 @@
 #include "Components/ActorComponent.h"
 #include "MyHealthComponent.generated.h"
 
+
+
 using namespace UP;
 UCLASS( ClassGroup=(COOP), meta=(BlueprintSpawnableComponent) )
 class TESTING_API UMyHealthComponent : public UActorComponent
@@ -16,12 +18,7 @@ public:
 	// Sets default values for this component's properties
 	UMyHealthComponent();
 
-	void damage(int num)
-	{
-
-	}
-
-	
+	//void damage(int num);
 
 protected:
 	// Called when the game starts
@@ -32,6 +29,8 @@ protected:
 
 public:	
 	
+	void Damage(float Damageval);
 
+	bool JudgeDeath();
 		
 };

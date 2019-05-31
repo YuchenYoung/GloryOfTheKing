@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "MyHealthComponent.h"
 
 // Sets default values for this component's properties
@@ -25,5 +24,12 @@ void UMyHealthComponent::BeginPlay()
 	
 }
 
+void UMyHealthComponent::Damage(float Damageval)
+{
+	Health -= Damageval;
+}
 
-
+bool UMyHealthComponent::JudgeDeath()
+{
+	return Health <= 0;
+}
