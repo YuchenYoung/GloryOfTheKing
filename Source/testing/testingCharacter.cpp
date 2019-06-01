@@ -11,6 +11,7 @@
 #include "HeadMountedDisplayFunctionLibrary.h"
 #include "Materials/Material.h"
 #include "Engine/World.h"
+#include "MyHealthComponent.h"
 
 AtestingCharacter::AtestingCharacter()
 {
@@ -52,6 +53,10 @@ AtestingCharacter::AtestingCharacter()
 	CursorToWorld->DecalSize = FVector(16.0f, 32.0f, 32.0f);
 	CursorToWorld->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f).Quaternion());
 
+	// Create MyHealthComponent Class
+	HeroHealth = CreateDefaultSubobject<UMyHealthComponent>(TEXT("HeroHealth"));
+
+
 	// Activate ticking in order to update the cursor every frame.
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
@@ -87,4 +92,25 @@ void AtestingCharacter::Tick(float DeltaSeconds)
 			CursorToWorld->SetWorldRotation(CursorR);
 		}
 	}
+	//UMyHealthComponent Myhealth;
+	//Myhealth.Damage(3);
 }
+
+void AtestingCharacter::GetInjured(AActor* DamageSource, float fDamageval)
+{
+	HeroHealth->Damage(fDamageval);
+	if (HeroHealth->JudgeDeath())
+	{
+		Die();
+	}
+}
+
+void AtestingCharacter::Die()
+{
+	//PlayDeathEffects();
+	Destroy();
+}
+
+
+
+

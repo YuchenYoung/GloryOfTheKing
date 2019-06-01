@@ -4,7 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "MyHealthComponent.h"
 #include "testingCharacter.generated.h"
+
+using namespace UM;
+
 
 UCLASS(Blueprintable)
 class AtestingCharacter : public ACharacter
@@ -36,5 +40,14 @@ private:
 	/** A decal that projects to the cursor location. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UDecalComponent* CursorToWorld;
+
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "HeroHealth")
+	class UMyHealthComponent* HeroHealth;
+
+public:
+	void GetInjured(AActor* DamageSource, float fDamageval);
+
+protected:
+	void Die();
 };
 
