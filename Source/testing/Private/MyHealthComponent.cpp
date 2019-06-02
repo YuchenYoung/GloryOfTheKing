@@ -27,6 +27,7 @@ void UMyHealthComponent::BeginPlay()
 void UMyHealthComponent::Damage(float Damageval)
 {
 	Health -= Damageval;
+	if (Health < 0) Health = 0;
 }
 
 bool UMyHealthComponent::JudgeDeath()

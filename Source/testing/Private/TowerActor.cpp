@@ -3,9 +3,11 @@
 
 #include "TowerActor.h"
 #include <map>
+#include "Components/StaticMeshComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "testingCharacter.h"
+#include "TinyHero.h"
 
 // Sets default values
 ATowerActor::ATowerActor()
@@ -20,6 +22,11 @@ ATowerActor::ATowerActor()
 	Capsulecomp->SetCollisionResponseToAllChannels(ECR_Ignore);
 	Capsulecomp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 	Capsulecomp->SetupAttachment(RootComponent);
+	AttackCapsulecomp = CreateDefaultSubobject<UCapsuleComponent>(TEXT("AttackingCapsulecomp"));
+	AttackCapsulecomp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	AttackCapsulecomp->SetCollisionResponseToAllChannels(ECR_Ignore);
+	AttackCapsulecomp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+	AttackCapsulecomp->SetupAttachment(RootComponent);
 	TowerHealth = CreateDefaultSubobject<UMyHealthComponent>(TEXT("TowerHealth"));
 
 	fCauseDamage = 0.8;
@@ -50,6 +57,9 @@ void ATowerActor::GetInjured(AActor* DamageSource, float fDamageval)
 void ATowerActor::Collapse()
 {
 	// CollapseEffect();
+	Meshcomp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	Capsulecomp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	AttackCapsulecomp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Destroy();
 }
 
@@ -69,6 +79,14 @@ void ATowerActor::Tick(float DeltaTime)
 			{
 				InjuredHero->GetInjured(this, this->fCauseDamage);
 			}
+			else
+			{
+				ATinyHero* InjuredTiny = Cast<ATinyHero>(ATemp);
+				if (InjuredTiny)
+				{
+					InjuredTiny->GetInjured(this, this->fCauseDamage);
+				}
+			}
 		}
 	}
 }
@@ -76,9 +94,11 @@ void ATowerActor::Tick(float DeltaTime)
 void ATowerActor::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
-	if (mWillAttack[OtherActor] == 0)
+	//if (mWillAttack[OtherActor] <= 0)
+	if (mWillAttack.find(OtherActor) == mWillAttack.end())
 	{
-		mWillAttack[OtherActor] = 1;
+		//mWillAttack[OtherActor] = 1;
+		mWillAttack.insert(pair<AActor*, int>(OtherActor, 1));
 	}
 	bIsAttacking = true;
 }

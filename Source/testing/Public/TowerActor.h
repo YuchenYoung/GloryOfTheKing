@@ -34,6 +34,8 @@ protected:
 	UStaticMeshComponent* Meshcomp;
 	UPROPERTY(VisibleAnywhere, Category = "Component")
 	UCapsuleComponent* Capsulecomp;
+	UPROPERTY(VisibleAnywhere, Category = "Component")
+	UCapsuleComponent* AttackCapsulecomp;
 	UPROPERTY(EditDefaultsOnly, Category = "Effects")
 	UParticleSystem* AttackEffects;
 	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Health")
