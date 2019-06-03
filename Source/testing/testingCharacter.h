@@ -6,7 +6,7 @@
 #include "GameFramework/Character.h"
 #include "MyHealthComponent.h"
 #include "testingCharacter.generated.h"
-
+class UPawnNoiseEmitterComponent;
 using namespace UM;
 
 
@@ -49,5 +49,7 @@ public:
 
 protected:
 	void Die();
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category ="AI", meta = (AllowPrivateAccess = "true"))
+	UPawnNoiseEmitterComponent* NoiseEmitterComponent;
 };
 

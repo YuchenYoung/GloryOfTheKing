@@ -12,6 +12,7 @@
 #include "Materials/Material.h"
 #include "Engine/World.h"
 #include "MyHealthComponent.h"
+#include"Components/PawnNoiseEmitterComponent.h"
 
 AtestingCharacter::AtestingCharacter()
 {
@@ -60,6 +61,8 @@ AtestingCharacter::AtestingCharacter()
 	// Activate ticking in order to update the cursor every frame.
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
+	NoiseEmitterComponent = CreateDefaultSubobject<UPawnNoiseEmitterComponent>(TEXT("NoiseEmitter"));
+
 }
 
 void AtestingCharacter::Tick(float DeltaSeconds)
