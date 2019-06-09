@@ -4,10 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include <map>
 #include "TinyHero.generated.h"
 
 using namespace UP;
 using namespace UI;
+using namespace std;
 
 class UPawnSensingComponent;
 class UCapsuleComponent;
@@ -24,34 +26,45 @@ public:
 	ATinyHero();
 
 protected:
+
 	UPROPERTY(EditInstanceOnly, Category = "AI")
-		bool bPatrol;
+	bool bPatrol;
 
 	UPROPERTY(EditInstanceOnly, Category = "AI", meta = (EditCondition = "bPatrol"))
-		AActor * FirstPatrolPoint;
+	AActor * FirstPatrolPoint;
 
 	UPROPERTY(EditInstanceOnly, Category = "AI", meta = (EditCondition = "bPatrol"))
-		AActor * SecondPatrolPoint;
+	AActor * SecondPatrolPoint;
+
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UPawnSensingComponent* PawnSensingComp;
 
 	AActor* CurrentPatrolPoint;
 
-	void MoveToNextPatrolPoint();
-
-	UPROPERTY(VisibleAnywhere, Category = "Components")
-		UPawnSensingComponent* PawnSensingComp;
-	UFUNCTION()
-		void OnPawnSeen(APawn* SeenPawn);
-	UFUNCTION()
-		void OnNoiseHeard(APawn* NoiseInstigator, const FVector& Location, float Volume);
-
-	/*
-	UPROPERTY(VisibleAnywhere, Category = "Component")
-	USkeletalMeshComponent* Mesh;
-	UPROPERTY(VisibleAnywhere, Category = "Component")
-	UCapsuleComponent* Capsulecomp;
-	*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Healthcomp")
 	UMyHealthComponent* TinyHealth;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Effects")
+	UParticleSystem* AttackEffects;
+
+	bool bIsAttacking;
+
+	float fCauseDamage;
+
+	map<AActor*, int> mWillAttack;
+
+protected:
+
+	//void MoveToNextPatrolPoint();
+
+	UFUNCTION()
+	void OnPawnSeen(APawn* SeenPawn);
+
+	UFUNCTION()
+	void OnNoiseHeard(APawn* NoiseInstigator, const FVector& Location, float Volume);
+
+	void PlayEffects();
+	
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -69,4 +82,11 @@ public:
 
 protected:
 	void Die();
+
+public:
+
+	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+
+	virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
+
 };

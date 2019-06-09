@@ -20,6 +20,9 @@ class TESTING_API ATowerActor : public AActor
 	
 protected:
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "var")
+	bool bruined;
+	bool bisfiring;
 	bool bIsAttacking;
 	float fCauseDamage;
 	map<AActor*, int> mWillAttack;
@@ -30,7 +33,7 @@ public:
 
 protected:
 
-	UPROPERTY(VisibleAnywhere, Category = "Component")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Component")
 	UStaticMeshComponent* Meshcomp;
 	UPROPERTY(VisibleAnywhere, Category = "Component")
 	UCapsuleComponent* Capsulecomp;
@@ -38,6 +41,10 @@ protected:
 	UCapsuleComponent* AttackCapsulecomp;
 	UPROPERTY(EditDefaultsOnly, Category = "Effects")
 	UParticleSystem* AttackEffects;
+	UPROPERTY(EditDefaultsOnly, Category = "Effects")
+	UParticleSystem* CollapseEffects;
+	UPROPERTY(EditDefaultsOnly, Category = "Material")
+	UMaterialInterface* RuinMaterial;
 	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Health")
 	UMyHealthComponent* TowerHealth;
 
@@ -46,7 +53,7 @@ protected:
 
 	void PlayEffects();
 
-	void GetInjured(AActor* DamageSource, float fDamageval);
+	void PlayCollapseEffects();
 
 	void Collapse();
 public:	
@@ -56,4 +63,6 @@ public:
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 
 	virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
+
+	void GetInjured(AActor* DamageSource, float fDamageval);
 };
