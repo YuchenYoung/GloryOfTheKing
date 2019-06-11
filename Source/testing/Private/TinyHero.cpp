@@ -47,9 +47,7 @@ void ATinyHero::BeginPlay()
 	}
 <<<<<<< HEAD
 	*/
-=======
 
->>>>>>> feature/shop
 }
 
 void ATinyHero::OnPawnSeen(APawn* SeenPawn)
@@ -69,14 +67,14 @@ void ATinyHero::OnNoiseHeard(APawn * NoiseInstigator, const FVector & Location, 
 	NewLookAt.Pitch = 0.0f;
 	NewLookAt.Roll = 0.0f;
 	SetActorRotation(NewLookAt);
-<<<<<<< HEAD
+
 
 	/*AController* Controller = GetController();
 	if (Controller)
 	{
 		Controller->StopMovement();
 	}*/
-=======
+
 	/*
 	AController* Controller = GetController();
 	if (Controller)
@@ -88,7 +86,7 @@ void ATinyHero::OnNoiseHeard(APawn * NoiseInstigator, const FVector & Location, 
 void ATinyHero::PlayEffects()
 {
 	UGameplayStatics::SpawnEmitterAtLocation(this, AttackEffects, GetActorLocation());
->>>>>>> b02d17b6e9d6be898ca2a00bf750a27aedd3209c
+
 }
 // Called every frame
 void ATinyHero::Tick(float DeltaTime)

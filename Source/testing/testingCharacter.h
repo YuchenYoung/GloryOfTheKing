@@ -48,17 +48,14 @@ public:
 	UPROPERTY( BlueprintReadWrite, Category = "HeroHealth")
 	class UMyHealthComponent* HeroHealth;
 
-<<<<<<< HEAD
+
 
 
 
 public:
-	void GetInjured(AActor* DamageSource, float fDamageval);
 	
 	
 
-=======
->>>>>>> b02d17b6e9d6be898ca2a00bf750a27aedd3209c
 
 	UFUNCTION()
 	void OnHealthChanged(UMyHealthComponent* HealthComp, float Health, float HealthDelta, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
