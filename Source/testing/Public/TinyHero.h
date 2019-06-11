@@ -50,6 +50,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Effects")
 	UParticleSystem* AttackEffects;
 
+	//FVector NextPathPoint;
+
 	bool bIsAttacking;
 
 	float fCauseDamage;
@@ -68,6 +70,7 @@ protected:
 
 	void PlayEffects();
 	
+	//FVector GetNextPathPoint();
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

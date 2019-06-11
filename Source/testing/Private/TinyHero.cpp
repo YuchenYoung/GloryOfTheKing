@@ -10,7 +10,7 @@
 #include "MyHealthComponent.h"
 #include "Perception/PawnSensingComponent.h"
 #include "DrawDebugHelpers.h"
-#include "AI/NavigationSystemBase.h"
+#include "GameFramework/Character.h"
 #include "NavigationSystem.h"
 #include "NavigationPath.h"
 #include "Kismet/GameplayStatics.h"
@@ -35,7 +35,7 @@ ATinyHero::ATinyHero()
 
 	TinyHealth = CreateDefaultSubobject<UMyHealthComponent>(TEXT("TinyHealth"));
 
-	fCauseDamage = 0.5;
+	fCauseDamage = 0.05;
 	bIsAttacking = false;
 }
 
@@ -43,6 +43,9 @@ ATinyHero::ATinyHero()
 void ATinyHero::BeginPlay()
 {
 	Super::BeginPlay();
+
+	//NextPathPoint = GetNextPathPoint();
+
 	/*
 	if (bPatrol)
 	{
@@ -89,10 +92,51 @@ void ATinyHero::PlayEffects()
 	UGameplayStatics::SpawnEmitterAtLocation(this, AttackEffects, GetActorLocation());
 
 }
+
+/*
+FVector ATinyHero::GetNextPathPoint()
+{
+	ABossTower* GoalTower;
+	GoalTower = CreateDefaultSubobject<ABossTower>(TEXT("GoalTower"));
+	for (FConstPawnIterator It = GetWorld()->GetPawnIterator(); It; ++It)
+	{
+		APawn* TempPawn = It->Get();
+		ABossTower* TempTower = Cast<ABossTower>(TempPawn);
+		if (TempTower)
+		{
+			GoalTower = TempTower;
+			break;
+		}
+	}
+	if (GoalTower)
+	{
+		UNavigationPath* NavPath = UNavigationSystemV1::FindPathToActorSynchronously(this, GetActorLocation(), GoalTower);
+		if (NavPath->PathPoints.Num() > 1)
+		{
+			return NavPath->PathPoints[1];
+		}
+		else return GetActorLocation();
+	}
+	return GetActorLocation();
+}
+*/
+
 // Called every frame
 void ATinyHero::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	/*
+	float DistanceToTarget = (GetActorLocation() - NextPathPoint).Size();
+	if (DistanceToTarget <= 10.f)
+	{
+		NextPathPoint = GetNextPathPoint();
+	}
+	else
+	{
+		UNavigationSystemV1::SimpleMoveToLocation(GetController(), NextPathPoint);;
+	}
+	*/
 
 	if (bIsAttacking)
 	{
@@ -148,7 +192,7 @@ void ATinyHero::Die()
 {
 	//PlayDeathEffect();
 	bDied = true;
-	//Destroy();
+	Destroy();
 }
 
 void ATinyHero::NotifyActorBeginOverlap(AActor* OtherActor)
