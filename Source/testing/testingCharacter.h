@@ -5,12 +5,15 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "MyHealthComponent.h"
+
 #include "testingCharacter.generated.h"
+
+
 class UPawnNoiseEmitterComponent;
 using namespace UM;
 
 
-UCLASS(Blueprintable)
+UCLASS(config = Game)
 class AtestingCharacter : public ACharacter
 {
 	GENERATED_BODY()
@@ -44,12 +47,38 @@ private:
 	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "HeroHealth")
 	class UMyHealthComponent* HeroHealth;
 
+
+
+
 public:
 	void GetInjured(AActor* DamageSource, float fDamageval);
+	
+	
+
 
 protected:
 	void Die();
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category ="AI", meta = (AllowPrivateAccess = "true"))
 	UPawnNoiseEmitterComponent* NoiseEmitterComponent;
+	UPROPERTY(VisibleAnywhere, Category = "Component")
+		UCapsuleComponent* AttackCapsulecomp;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
+	UParticleSystem* SkillEffectQ;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
+	UParticleSystem* SkillEffectW;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
+	UParticleSystem* SkillEffectE;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
+	UParticleSystem* SkillEffectR;
+
+	void PlayEffectsQ();
+	void PlayEffectsW();
+	void PlayEffectsE();
+	void PlayEffectsR();
+
+public:
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+
+
 };
 

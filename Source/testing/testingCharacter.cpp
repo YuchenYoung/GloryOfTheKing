@@ -14,8 +14,25 @@
 #include "MyHealthComponent.h"
 #include"Components/PawnNoiseEmitterComponent.h"
 
+#include "Components/InputComponent.h"
+#include "Kismet/GameplayStatics.h"
+
+#include "Components/CapsuleComponent.h"
+
+
+	
+
+
+
+
+
 AtestingCharacter::AtestingCharacter()
 {
+	AttackCapsulecomp = CreateDefaultSubobject<UCapsuleComponent>(TEXT("AttackingCapsulecomp"));
+	AttackCapsulecomp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	AttackCapsulecomp->SetCollisionResponseToAllChannels(ECR_Ignore);
+	AttackCapsulecomp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+	AttackCapsulecomp->SetupAttachment(RootComponent);
 	// Set size for player capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
@@ -62,6 +79,7 @@ AtestingCharacter::AtestingCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
 	NoiseEmitterComponent = CreateDefaultSubobject<UPawnNoiseEmitterComponent>(TEXT("NoiseEmitter"));
+	
 
 }
 
@@ -112,6 +130,38 @@ void AtestingCharacter::Die()
 {
 	//PlayDeathEffects();
 	Destroy();
+}
+
+void AtestingCharacter::PlayEffectsQ()
+{
+	UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectQ, GetActorLocation());
+}
+
+void AtestingCharacter::PlayEffectsW()
+{
+	UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectW, GetActorLocation());
+}
+
+void AtestingCharacter::PlayEffectsE()
+{
+	UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectE, GetActorLocation());
+}
+
+void AtestingCharacter::PlayEffectsR()
+{
+	UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectR, GetActorLocation());
+}
+
+void AtestingCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	PlayerInputComponent->BindAction("KeyboardQ", IE_Pressed, this, &AtestingCharacter::PlayEffectsQ);
+	PlayerInputComponent->BindAction("KeyboardW", IE_Pressed, this, &AtestingCharacter::PlayEffectsW);
+	PlayerInputComponent->BindAction("KeyboardE", IE_Pressed, this, &AtestingCharacter::PlayEffectsE);
+	PlayerInputComponent->BindAction("KeyboardR", IE_Pressed, this, &AtestingCharacter::PlayEffectsR);
+
+
 }
 
 

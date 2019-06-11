@@ -58,11 +58,11 @@ void ATinyHero::OnNoiseHeard(APawn * NoiseInstigator, const FVector & Location, 
 	NewLookAt.Roll = 0.0f;
 	SetActorRotation(NewLookAt);
 
-	AController* Controller = GetController();
+	/*AController* Controller = GetController();
 	if (Controller)
 	{
 		Controller->StopMovement();
-	}
+	}*/
 }
 // Called every frame
 void ATinyHero::Tick(float DeltaTime)
