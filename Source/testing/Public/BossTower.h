@@ -4,8 +4,8 @@
 
 #include <map>
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
-#include "TowerActor.generated.h"
+#include "GameFramework/Pawn.h"
+#include "BossTower.generated.h"
 
 using namespace UP;
 using namespace std;
@@ -14,22 +14,21 @@ class UCapsuleComponent;
 class UMyHealthComponent;
 
 UCLASS()
-class TESTING_API ATowerActor : public AActor
+class TESTING_API ABossTower : public APawn
 {
 	GENERATED_BODY()
-	
+
 protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "var")
 	bool bruined;
-	bool bisfiring;
 	bool bIsAttacking;
 	float fCauseDamage;
 	map<AActor*, int> mWillAttack;
 
-public:	
-	// Sets default values for this actor's properties
-	ATowerActor();
+public:
+	// Sets default values for this pawn's properties
+	ABossTower();
 
 protected:
 
@@ -41,10 +40,6 @@ protected:
 	UCapsuleComponent* AttackCapsulecomp;
 	UPROPERTY(EditDefaultsOnly, Category = "Effects")
 	UParticleSystem* AttackEffects;
-	UPROPERTY(EditDefaultsOnly, Category = "Effects")
-	UParticleSystem* CollapseEffects;
-	UPROPERTY(EditDefaultsOnly, Category = "Material")
-	UMaterialInterface* RuinMaterial;
 	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Health")
 	UMyHealthComponent* TowerHealth;
 
@@ -53,17 +48,17 @@ protected:
 
 	void PlayEffects();
 
-	void PlayCollapseEffects();
-
 	void Collapse();
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	
+
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 
 	virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
 
 	UFUNCTION(BlueprintCallable)
 	void GetInjured(AActor* DamageSource, float fDamageval);
+
 };

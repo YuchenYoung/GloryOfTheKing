@@ -27,13 +27,15 @@ void UMyHealthComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	
+	/*
 	AActor* MyOwner = GetOwner();
 	if (MyOwner)
 	{
 		MyOwner->OnTakeAnyDamage.AddDynamic(this, &UMyHealthComponent::HandleTakeAnyDamage);
 	}
+	*/
 	 Health = DefaultHealth;
+
 }
 
 void UMyHealthComponent::Damage(float Damageval,float Defense)
@@ -42,6 +44,7 @@ void UMyHealthComponent::Damage(float Damageval,float Defense)
 	if (Health < 0) Health = 0;
 }
 
+/*
 void UMyHealthComponent::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
 {
 	if (Damage <= 0.0f)
@@ -57,6 +60,7 @@ void UMyHealthComponent::HandleTakeAnyDamage(AActor* DamagedActor, float Damage,
 	OnHealthChanged.Broadcast(this, Health, Damage, DamageType,InstigatedBy, DamageCauser);
 }
 
+*/
 bool UMyHealthComponent::JudgeDeath()
 {
 	return Health <= 0;

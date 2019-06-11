@@ -10,12 +10,13 @@
 #include "MyHealthComponent.h"
 #include "Perception/PawnSensingComponent.h"
 #include "DrawDebugHelpers.h"
-#include "AI/NavigationSystemBase.h"
+#include "GameFramework/Character.h"
 #include "NavigationSystem.h"
 #include "NavigationPath.h"
 #include "Kismet/GameplayStatics.h"
 #include "testingCharacter.h"
 #include "TowerActor.h"
+#include "BossTower.h"
 #include "Net/UnrealNetwork.h"
 
 using namespace std;
@@ -25,14 +26,16 @@ ATinyHero::ATinyHero()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	
+	OuterCapsuleComp = CreateDefaultSubobject<UCapsuleComponent>(TEXT("OuterCapsuleComp"));
+	OuterCapsuleComp->SetupAttachment(RootComponent);
+
 	PawnSensingComp = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensingComp"));
 	PawnSensingComp->OnSeePawn.AddDynamic(this, &ATinyHero::OnPawnSeen);
 	PawnSensingComp->OnHearNoise.AddDynamic(this, &ATinyHero::OnNoiseHeard);
 
 	TinyHealth = CreateDefaultSubobject<UMyHealthComponent>(TEXT("TinyHealth"));
 
-	fCauseDamage = 0.5;
+	fCauseDamage = 0.05;
 	bIsAttacking = false;
 }
 
@@ -40,14 +43,15 @@ ATinyHero::ATinyHero()
 void ATinyHero::BeginPlay()
 {
 	Super::BeginPlay();
+
+	//NextPathPoint = GetNextPathPoint();
+
 	/*
 	if (bPatrol)
 	{
 		MoveToNextPatrolPoint();
 	}
-<<<<<<< HEAD
 	*/
-
 }
 
 void ATinyHero::OnPawnSeen(APawn* SeenPawn)
@@ -88,10 +92,51 @@ void ATinyHero::PlayEffects()
 	UGameplayStatics::SpawnEmitterAtLocation(this, AttackEffects, GetActorLocation());
 
 }
+
+/*
+FVector ATinyHero::GetNextPathPoint()
+{
+	ABossTower* GoalTower;
+	GoalTower = CreateDefaultSubobject<ABossTower>(TEXT("GoalTower"));
+	for (FConstPawnIterator It = GetWorld()->GetPawnIterator(); It; ++It)
+	{
+		APawn* TempPawn = It->Get();
+		ABossTower* TempTower = Cast<ABossTower>(TempPawn);
+		if (TempTower)
+		{
+			GoalTower = TempTower;
+			break;
+		}
+	}
+	if (GoalTower)
+	{
+		UNavigationPath* NavPath = UNavigationSystemV1::FindPathToActorSynchronously(this, GetActorLocation(), GoalTower);
+		if (NavPath->PathPoints.Num() > 1)
+		{
+			return NavPath->PathPoints[1];
+		}
+		else return GetActorLocation();
+	}
+	return GetActorLocation();
+}
+*/
+
 // Called every frame
 void ATinyHero::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	/*
+	float DistanceToTarget = (GetActorLocation() - NextPathPoint).Size();
+	if (DistanceToTarget <= 10.f)
+	{
+		NextPathPoint = GetNextPathPoint();
+	}
+	else
+	{
+		UNavigationSystemV1::SimpleMoveToLocation(GetController(), NextPathPoint);;
+	}
+	*/
 
 	if (bIsAttacking)
 	{
@@ -112,6 +157,14 @@ void ATinyHero::Tick(float DeltaTime)
 				{
 					InjuredTower->GetInjured(this, this->fCauseDamage);
 				}
+				else
+				{
+					ABossTower* InjuredBoss = Cast<ABossTower>(ATemp);
+					if (InjuredBoss)
+					{
+						InjuredBoss->GetInjured(this, this->fCauseDamage);
+					}
+				}
 			}
 		}
 	}
@@ -128,7 +181,7 @@ void ATinyHero::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void ATinyHero::GetInjured(AActor* DamageSource, float fDamageval)
 {
-	TinyHealth->Damage(fDamageval,1);
+	TinyHealth->Damage(fDamageval, 1);
 	if (TinyHealth->JudgeDeath())
 	{
 		Die();
@@ -139,7 +192,7 @@ void ATinyHero::Die()
 {
 	//PlayDeathEffect();
 	bDied = true;
-	//Destroy();
+	Destroy();
 }
 
 void ATinyHero::NotifyActorBeginOverlap(AActor* OtherActor)
