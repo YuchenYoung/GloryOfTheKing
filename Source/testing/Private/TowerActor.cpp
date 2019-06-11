@@ -8,6 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "testingCharacter.h"
 #include "TinyHero.h"
+#include"GameFramework/DamageType.h"
 
 // Sets default values
 ATowerActor::ATowerActor()
@@ -47,7 +48,7 @@ void ATowerActor::PlayEffects()
 
 void ATowerActor::GetInjured(AActor* DamageSource, float fDamageval)
 {
-	TowerHealth->Damage(fDamageval);
+	TowerHealth->Damage(fDamageval,1);
 	if (TowerHealth->JudgeDeath())
 	{
 		Collapse();
@@ -78,6 +79,7 @@ void ATowerActor::Tick(float DeltaTime)
 			if (InjuredHero)
 			{
 				InjuredHero->GetInjured(this, this->fCauseDamage);
+				//InjuredHero->HeroHealth->HandleTakeAnyDamage(InjuredHero, fCauseDamage, InjuredHero->HeroHealth->DefaultDamageType, InjuredHero->HeroHealth->DefaultConTroller, this);
 			}
 			else
 			{

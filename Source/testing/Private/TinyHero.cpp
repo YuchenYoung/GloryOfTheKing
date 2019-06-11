@@ -38,7 +38,9 @@ void ATinyHero::BeginPlay()
 	{
 		MoveToNextPatrolPoint();
 	}
+
 }
+
 void ATinyHero::OnPawnSeen(APawn* SeenPawn)
 {
 	if (SeenPawn == nullptr)
@@ -80,7 +82,7 @@ void ATinyHero::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void ATinyHero::GetInjured(AActor* DamageSource, float fDamageval)
 {
-	TinyHealth->Damage(fDamageval);
+	TinyHealth->Damage(fDamageval,1);
 	if (TinyHealth->JudgeDeath())
 	{
 		Die();
@@ -90,7 +92,8 @@ void ATinyHero::GetInjured(AActor* DamageSource, float fDamageval)
 void ATinyHero::Die()
 {
 	//PlayDeathEffect();
-	Destroy();
+	bDied = true;
+	//Destroy();
 }
 
 void ATinyHero::MoveToNextPatrolPoint()
