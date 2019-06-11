@@ -16,6 +16,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "testingCharacter.h"
 #include "TowerActor.h"
+#include "BossTower.h"
 #include "Net/UnrealNetwork.h"
 
 using namespace std;
@@ -25,7 +26,9 @@ ATinyHero::ATinyHero()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	
+	OuterCapsuleComp = CreateDefaultSubobject<UCapsuleComponent>(TEXT("OuterCapsuleComp"));
+	OuterCapsuleComp->SetupAttachment(RootComponent);
+
 	PawnSensingComp = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensingComp"));
 	PawnSensingComp->OnSeePawn.AddDynamic(this, &ATinyHero::OnPawnSeen);
 	PawnSensingComp->OnHearNoise.AddDynamic(this, &ATinyHero::OnNoiseHeard);
@@ -45,9 +48,7 @@ void ATinyHero::BeginPlay()
 	{
 		MoveToNextPatrolPoint();
 	}
-<<<<<<< HEAD
 	*/
-
 }
 
 void ATinyHero::OnPawnSeen(APawn* SeenPawn)
@@ -112,6 +113,14 @@ void ATinyHero::Tick(float DeltaTime)
 				{
 					InjuredTower->GetInjured(this, this->fCauseDamage);
 				}
+				else
+				{
+					ABossTower* InjuredBoss = Cast<ABossTower>(ATemp);
+					if (InjuredBoss)
+					{
+						InjuredBoss->GetInjured(this, this->fCauseDamage);
+					}
+				}
 			}
 		}
 	}
@@ -128,7 +137,7 @@ void ATinyHero::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void ATinyHero::GetInjured(AActor* DamageSource, float fDamageval)
 {
-	TinyHealth->Damage(fDamageval,1);
+	TinyHealth->Damage(fDamageval, 1);
 	if (TinyHealth->JudgeDeath())
 	{
 		Die();

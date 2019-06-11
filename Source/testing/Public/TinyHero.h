@@ -27,6 +27,9 @@ public:
 
 protected:
 
+	UPROPERTY(VisibleAnywhere, Category = "Component")
+	UCapsuleComponent* OuterCapsuleComp;
+
 	UPROPERTY(EditInstanceOnly, Category = "AI")
 	bool bPatrol;
 
@@ -77,9 +80,13 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 public:
+
+	UFUNCTION(BlueprintCallable)
 	void GetInjured(AActor* DamageSource, float fDamageval);
+
 	UPROPERTY(BlueprintReadOnly, Category = "AI")
 	bool bDied;
+
 protected:
 	void Die();
 

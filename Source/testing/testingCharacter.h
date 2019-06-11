@@ -5,14 +5,12 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "MyHealthComponent.h"
-
 #include "testingCharacter.generated.h"
 
+using namespace UM;
 
 class UPawnNoiseEmitterComponent;
 class UMyhealthComponent;
-using namespace UM;
-
 
 UCLASS(config = Game)
 class AtestingCharacter : public ACharacter
@@ -60,28 +58,26 @@ public:
 	UFUNCTION()
 	void OnHealthChanged(UMyHealthComponent* HealthComp, float Health, float HealthDelta, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
-
-
-	UFUNCTION()
-		void GetInjured(AActor* DamageSource, float fDamageval);
+	UFUNCTION(BlueprintCallable)
+	void GetInjured(AActor* DamageSource, float fDamageval);
 
 	UFUNCTION()
-		void OnLevelChanged();
+	void OnLevelChanged();
 	UPROPERTY(BlueprintReadWrite, Category = "Money")
-		int Money;
+	int Money;
 	UPROPERTY(BlueprintReadWrite, Category = "Attribute")
-		float AttackValue;
+	float AttackValue;
 	UPROPERTY(BlueprintReadWrite, Category = "Attribute")
-		float Defense;
+	float Defense;
 	UPROPERTY(BlueprintReadWrite, Category = "Attribute")
-		float Energy;
+	float Energy;
 	UPROPERTY(BlueprintReadWrite, Category = "Attribute")
-		float aEnergy;
+	float aEnergy;
 	UPROPERTY(BlueprintReadWrite, Category = "Attribute")
-		int Level;
+	int Level;
 	float dLevel;
 	UPROPERTY(BlueprintReadWrite, Category = "Attribute")
-		float aLevel;
+	float aLevel;
 protected:
 	UPROPERTY(BlueprintReadOnly,Category="Player")
 	bool bDied;
@@ -91,7 +87,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category ="AI", meta = (AllowPrivateAccess = "true"))
 	UPawnNoiseEmitterComponent* NoiseEmitterComponent;
 	UPROPERTY(VisibleAnywhere, Category = "Component")
-		UCapsuleComponent* AttackCapsulecomp;
+	UCapsuleComponent* AttackCapsulecomp;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
 	UParticleSystem* SkillEffectQ;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")

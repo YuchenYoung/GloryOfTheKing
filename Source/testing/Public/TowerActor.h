@@ -64,5 +64,6 @@ public:
 
 	virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
 
+	UFUNCTION(BlueprintCallable)
 	void GetInjured(AActor* DamageSource, float fDamageval);
 };
