@@ -53,16 +53,11 @@ public:
 
 
 public:
-	
-	
-
 
 	UFUNCTION()
 	void OnHealthChanged(UMyHealthComponent* HealthComp, float Health, float HealthDelta, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
-
-
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 		void GetInjured(AActor* DamageSource, float fDamageval);
 
 	UFUNCTION()
@@ -101,14 +96,17 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
 	UParticleSystem* SkillEffectR;
 
-	void PlayEffectsQ();
-	void PlayEffectsW();
-	void PlayEffectsE();
-	void PlayEffectsR();
+	void PlayEffects1();
+	void PlayEffects2();
+	void PlayEffects3();
+	void PlayEffects4();
 
 public:
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
-
+	void MoveForward(float val);
+	void MoveRight(float val);
+	int direction;
+	/* forward 1  backward 2  left 3  right 4  */
 };
 
