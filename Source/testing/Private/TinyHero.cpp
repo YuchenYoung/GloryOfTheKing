@@ -45,7 +45,11 @@ void ATinyHero::BeginPlay()
 	{
 		MoveToNextPatrolPoint();
 	}
+<<<<<<< HEAD
 	*/
+=======
+
+>>>>>>> feature/shop
 }
 
 void ATinyHero::OnPawnSeen(APawn* SeenPawn)
@@ -117,7 +121,7 @@ void ATinyHero::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void ATinyHero::GetInjured(AActor* DamageSource, float fDamageval)
 {
-	TinyHealth->Damage(fDamageval);
+	TinyHealth->Damage(fDamageval,1);
 	if (TinyHealth->JudgeDeath())
 	{
 		Die();
@@ -127,7 +131,8 @@ void ATinyHero::GetInjured(AActor* DamageSource, float fDamageval)
 void ATinyHero::Die()
 {
 	//PlayDeathEffect();
-	Destroy();
+	bDied = true;
+	//Destroy();
 }
 
 void ATinyHero::NotifyActorBeginOverlap(AActor* OtherActor)
