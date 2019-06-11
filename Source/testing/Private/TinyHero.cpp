@@ -2,14 +2,23 @@
 
 
 #include "TinyHero.h"
+#include <map>
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
-#include"testingGameMode.h"
+//#include "testingGameMode.h"
+#include "MyGameModeBase.h"
 #include "MyHealthComponent.h"
 #include "Perception/PawnSensingComponent.h"
-#include"DrawDebugHelpers.h"
-#include"AI/NavigationSystemBase.h"
-#include"Net/UnrealNetwork.h"
+#include "DrawDebugHelpers.h"
+#include "AI/NavigationSystemBase.h"
+#include "NavigationSystem.h"
+#include "NavigationPath.h"
+#include "Kismet/GameplayStatics.h"
+#include "testingCharacter.h"
+#include "TowerActor.h"
+#include "Net/UnrealNetwork.h"
+
+using namespace std;
 
 // Sets default values
 ATinyHero::ATinyHero()
@@ -21,28 +30,31 @@ ATinyHero::ATinyHero()
 	PawnSensingComp->OnSeePawn.AddDynamic(this, &ATinyHero::OnPawnSeen);
 	PawnSensingComp->OnHearNoise.AddDynamic(this, &ATinyHero::OnNoiseHeard);
 
-	/*
-	Mesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
-	RootComponent = Cast<USceneComponent>(Mesh);
-	Capsulecomp = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Capsulecomp"));
-	Capsulecomp->SetupAttachment(RootComponent);
-	*/
 	TinyHealth = CreateDefaultSubobject<UMyHealthComponent>(TEXT("TinyHealth"));
+
+	fCauseDamage = 0.5;
+	bIsAttacking = false;
 }
 
 // Called when the game starts or when spawned
 void ATinyHero::BeginPlay()
 {
 	Super::BeginPlay();
+	/*
 	if (bPatrol)
 	{
 		MoveToNextPatrolPoint();
 	}
+<<<<<<< HEAD
+	*/
+=======
+
+>>>>>>> feature/shop
 }
+
 void ATinyHero::OnPawnSeen(APawn* SeenPawn)
 {
-	if (SeenPawn == nullptr)
-		return;
+	if (SeenPawn == nullptr) return;
 	DrawDebugSphere(GetWorld(), SeenPawn->GetActorLocation(), 32.0f, 12, FColor::Red, false, 10.0f);
 }
 
@@ -57,18 +69,54 @@ void ATinyHero::OnNoiseHeard(APawn * NoiseInstigator, const FVector & Location, 
 	NewLookAt.Pitch = 0.0f;
 	NewLookAt.Roll = 0.0f;
 	SetActorRotation(NewLookAt);
+<<<<<<< HEAD
 
 	/*AController* Controller = GetController();
 	if (Controller)
 	{
 		Controller->StopMovement();
 	}*/
+=======
+	/*
+	AController* Controller = GetController();
+	if (Controller)
+	{
+		Controller->StopMovement();
+	}
+	*/
+}
+void ATinyHero::PlayEffects()
+{
+	UGameplayStatics::SpawnEmitterAtLocation(this, AttackEffects, GetActorLocation());
+>>>>>>> b02d17b6e9d6be898ca2a00bf750a27aedd3209c
 }
 // Called every frame
 void ATinyHero::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (bIsAttacking)
+	{
+		PlayEffects();
+		map<AActor*, int>::iterator iToAttack;
+		for (iToAttack = mWillAttack.begin(); iToAttack != mWillAttack.end(); iToAttack++)
+		{
+			AActor* ATemp = iToAttack->first;
+			AtestingCharacter* InjuredHero = Cast<AtestingCharacter>(ATemp);
+			if (InjuredHero)
+			{
+				InjuredHero->GetInjured(this, this->fCauseDamage);
+			}
+			else
+			{
+				ATowerActor* InjuredTower = Cast<ATowerActor>(ATemp);
+				if (InjuredTower)
+				{
+					InjuredTower->GetInjured(this, this->fCauseDamage);
+				}
+			}
+		}
+	}
 }
 
 // Called to bind functionality to input
@@ -76,11 +124,13 @@ void ATinyHero::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+
+	
 }
 
 void ATinyHero::GetInjured(AActor* DamageSource, float fDamageval)
 {
-	TinyHealth->Damage(fDamageval);
+	TinyHealth->Damage(fDamageval,1);
 	if (TinyHealth->JudgeDeath())
 	{
 		Die();
@@ -90,9 +140,31 @@ void ATinyHero::GetInjured(AActor* DamageSource, float fDamageval)
 void ATinyHero::Die()
 {
 	//PlayDeathEffect();
-	Destroy();
+	bDied = true;
+	//Destroy();
 }
 
+void ATinyHero::NotifyActorBeginOverlap(AActor* OtherActor)
+{
+	Super::NotifyActorBeginOverlap(OtherActor);
+	if (mWillAttack.find(OtherActor) == mWillAttack.end())
+	{
+		mWillAttack.insert(pair<AActor*, int>(OtherActor, 1));
+	}
+	bIsAttacking = true;
+}
+
+void ATinyHero::NotifyActorEndOverlap(AActor* OtherActor)
+{
+	Super::NotifyActorEndOverlap(OtherActor);
+	mWillAttack.erase(OtherActor);
+	if (mWillAttack.empty())
+	{
+		bIsAttacking = false;
+	}
+}
+
+/*
 void ATinyHero::MoveToNextPatrolPoint()
 {
 	if (CurrentPatrolPoint == nullptr || CurrentPatrolPoint == SecondPatrolPoint)
@@ -106,7 +178,7 @@ void ATinyHero::MoveToNextPatrolPoint()
 	UNavigationSystem::SimpleMoveToActor(GetController(), CurrentPatrolPoint);
 
 }
-
+*/
 
 
 

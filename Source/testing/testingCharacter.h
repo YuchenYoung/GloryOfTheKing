@@ -10,6 +10,7 @@
 
 
 class UPawnNoiseEmitterComponent;
+class UMyhealthComponent;
 using namespace UM;
 
 
@@ -43,10 +44,11 @@ private:
 	/** A decal that projects to the cursor location. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UDecalComponent* CursorToWorld;
-
-	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "HeroHealth")
+public:
+	UPROPERTY( BlueprintReadWrite, Category = "HeroHealth")
 	class UMyHealthComponent* HeroHealth;
 
+<<<<<<< HEAD
 
 
 
@@ -55,9 +57,40 @@ public:
 	
 	
 
+=======
+>>>>>>> b02d17b6e9d6be898ca2a00bf750a27aedd3209c
 
+	UFUNCTION()
+	void OnHealthChanged(UMyHealthComponent* HealthComp, float Health, float HealthDelta, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
+
+
+
+	UFUNCTION()
+		void GetInjured(AActor* DamageSource, float fDamageval);
+
+	UFUNCTION()
+		void OnLevelChanged();
+	UPROPERTY(BlueprintReadWrite, Category = "Money")
+		int Money;
+	UPROPERTY(BlueprintReadWrite, Category = "Attribute")
+		float AttackValue;
+	UPROPERTY(BlueprintReadWrite, Category = "Attribute")
+		float Defense;
+	UPROPERTY(BlueprintReadWrite, Category = "Attribute")
+		float Energy;
+	UPROPERTY(BlueprintReadWrite, Category = "Attribute")
+		float aEnergy;
+	UPROPERTY(BlueprintReadWrite, Category = "Attribute")
+		int Level;
+	float dLevel;
+	UPROPERTY(BlueprintReadWrite, Category = "Attribute")
+		float aLevel;
 protected:
+	UPROPERTY(BlueprintReadOnly,Category="Player")
+	bool bDied;
 	void Die();
+	void PlayDeathEffects();
+	void BeginPlay();
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category ="AI", meta = (AllowPrivateAccess = "true"))
 	UPawnNoiseEmitterComponent* NoiseEmitterComponent;
 	UPROPERTY(VisibleAnywhere, Category = "Component")

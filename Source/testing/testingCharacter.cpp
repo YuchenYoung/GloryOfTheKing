@@ -81,6 +81,16 @@ AtestingCharacter::AtestingCharacter()
 	NoiseEmitterComponent = CreateDefaultSubobject<UPawnNoiseEmitterComponent>(TEXT("NoiseEmitter"));
 	
 
+	//set default money value
+	Money = 10000;
+	//set default attribution
+	AttackValue = 20.0f;
+	Defense = 1.0f;
+	Energy = 10.0f;
+	aEnergy = 0.01f;
+	Level = 1;
+	dLevel = 0.0f;
+	aLevel = 0.3f;
 }
 
 void AtestingCharacter::Tick(float DeltaSeconds)
@@ -115,21 +125,75 @@ void AtestingCharacter::Tick(float DeltaSeconds)
 	}
 	//UMyHealthComponent Myhealth;
 	//Myhealth.Damage(3);
+	if (Energy < 100.0f)
+	{
+		Energy += aEnergy;
+		if (Energy > 100.0f)
+		{
+			Energy = 100.0f;
+		}
+	}
+	if (dLevel < 100.0f)
+	{
+		dLevel += aLevel;
+		if (dLevel >= 100.0f)
+		{
+			dLevel -= 100.0f;
+			aLevel *= 0.8f;
+			Level++;
+			if (Level > 15) {
+				Level = 15;
+			}
+			else{
+				OnLevelChanged();
+			}
+		}
+	}
+}
+
+void AtestingCharacter::OnHealthChanged(UMyHealthComponent* HealthComp, float Health, float HealthDelta, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
+{
+	if (Health <= 0.0f && !bDied)
+	{
+		//Die!
+		bDied = true;
+
+		GetMovementComponent()->StopMovementImmediately();
+		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
 }
 
 void AtestingCharacter::GetInjured(AActor* DamageSource, float fDamageval)
 {
-	HeroHealth->Damage(fDamageval);
-	if (HeroHealth->JudgeDeath())
+	HeroHealth->Damage(fDamageval,Defense);
+
+	if (HeroHealth->JudgeDeath()&&!bDied)
 	{
 		Die();
 	}
 }
 
+void AtestingCharacter::OnLevelChanged()
+{
+	Defense *= Level * 0.1 + 1;
+	aEnergy *= Level * 0.1 + 1;
+}
+
+void AtestingCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+}
 void AtestingCharacter::Die()
 {
-	//PlayDeathEffects();
-	Destroy();
+	PlayDeathEffects();
+	//Destroy();
+}
+void AtestingCharacter::PlayDeathEffects()
+{
+	bDied = true;
+	GetMovementComponent()->StopMovementImmediately();
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void AtestingCharacter::PlayEffectsQ()

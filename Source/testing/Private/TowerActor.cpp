@@ -8,6 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "testingCharacter.h"
 #include "TinyHero.h"
+#include"GameFramework/DamageType.h"
 
 // Sets default values
 ATowerActor::ATowerActor()
@@ -29,8 +30,10 @@ ATowerActor::ATowerActor()
 	AttackCapsulecomp->SetupAttachment(RootComponent);
 	TowerHealth = CreateDefaultSubobject<UMyHealthComponent>(TEXT("TowerHealth"));
 
-	fCauseDamage = 0.8;
+	fCauseDamage = 0.05;
 	bIsAttacking = false;
+	bruined = false;
+	bisfiring = false;
 }
 
 // Called when the game starts or when spawned
@@ -45,9 +48,14 @@ void ATowerActor::PlayEffects()
 	UGameplayStatics::SpawnEmitterAtLocation(this, AttackEffects, GetActorLocation());
 }
 
+void ATowerActor::PlayCollapseEffects()
+{
+	UGameplayStatics::SpawnEmitterAtLocation(this, CollapseEffects, GetActorLocation());
+}
+
 void ATowerActor::GetInjured(AActor* DamageSource, float fDamageval)
 {
-	TowerHealth->Damage(fDamageval);
+	TowerHealth->Damage(fDamageval,1);
 	if (TowerHealth->JudgeDeath())
 	{
 		Collapse();
@@ -60,13 +68,27 @@ void ATowerActor::Collapse()
 	Meshcomp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Capsulecomp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	AttackCapsulecomp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	Destroy();
+	Meshcomp->SetMaterial(0, RuinMaterial);
+	bruined = true;
+	//PlayCollapseEffects();
+	//Destroy();
 }
 
 // Called every frame
 void ATowerActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (bruined && bisfiring)
+	{
+		PlayCollapseEffects();
+		return;
+	}
+	if (bruined)
+	{
+		bisfiring = true;
+		PlayCollapseEffects();
+		return;
+	}
 	if (bIsAttacking)
 	{
 		PlayEffects();
@@ -78,6 +100,7 @@ void ATowerActor::Tick(float DeltaTime)
 			if (InjuredHero)
 			{
 				InjuredHero->GetInjured(this, this->fCauseDamage);
+				//InjuredHero->HeroHealth->HandleTakeAnyDamage(InjuredHero, fCauseDamage, InjuredHero->HeroHealth->DefaultDamageType, InjuredHero->HeroHealth->DefaultConTroller, this);
 			}
 			else
 			{
@@ -94,10 +117,8 @@ void ATowerActor::Tick(float DeltaTime)
 void ATowerActor::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
-	//if (mWillAttack[OtherActor] <= 0)
 	if (mWillAttack.find(OtherActor) == mWillAttack.end())
 	{
-		//mWillAttack[OtherActor] = 1;
 		mWillAttack.insert(pair<AActor*, int>(OtherActor, 1));
 	}
 	bIsAttacking = true;
