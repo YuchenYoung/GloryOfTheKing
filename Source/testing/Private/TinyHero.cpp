@@ -206,6 +206,11 @@ bool ATinyHero::GetInjured(AActor* DamageSource, float fDamageval)
 	TinyHealth->Damage(fDamageval, 1);
 	if (TinyHealth->JudgeDeath())
 	{
+		AtestingCharacter* SourceHero = Cast<AtestingCharacter>(DamageSource);
+		if (SourceHero)
+		{
+			SourceHero->AddResult_Tiny();
+		}
 		Die();
 	}
 	return true;

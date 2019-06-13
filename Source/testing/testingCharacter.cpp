@@ -12,21 +12,10 @@
 #include "Materials/Material.h"
 #include "Engine/World.h"
 #include "MyHealthComponent.h"
-#include "TinyHero.h"
-#include "TowerActor.h"
-#include "BossTower.h"
-#include "Components/PawnNoiseEmitterComponent.h"
-
+#include"Components/PawnNoiseEmitterComponent.h"
 #include "Components/InputComponent.h"
 #include "Kismet/GameplayStatics.h"
-
 #include "Components/CapsuleComponent.h"
-
-
-	
-
-
-
 
 
 AtestingCharacter::AtestingCharacter()
@@ -42,13 +31,10 @@ AtestingCharacter::AtestingCharacter()
 	// Don't rotate character to camera direction
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
-	bUseControllerRotationRoll = false;
 
 	// Configure character movement
-	GetCharacterMovement()->bOrientRotationToMovement = true; // Rotate character to moving direction
-	GetCharacterMovement()->RotationRate = FRotator(0.f, 640.f, 0.f);
-	GetCharacterMovement()->bConstrainToPlane = true;
-	GetCharacterMovement()->bSnapToPlaneAtStart = true;
+	// Rotate character to moving direction
+
 
 	// Create a camera boom...
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
@@ -83,8 +69,6 @@ AtestingCharacter::AtestingCharacter()
 	PrimaryActorTick.bStartWithTickEnabled = true;
 	NoiseEmitterComponent = CreateDefaultSubobject<UPawnNoiseEmitterComponent>(TEXT("NoiseEmitter"));
 	
-	// Set side
-	bInMySide = 1;
 
 	//set default money value
 	Money = 10000;
@@ -96,6 +80,9 @@ AtestingCharacter::AtestingCharacter()
 	Level = 1;
 	dLevel = 0.0f;
 	aLevel = 0.3f;
+	Result_Tiny = 0;
+	Result_Hero = 0;
+	Result_Tower = 0;
 }
 
 void AtestingCharacter::Tick(float DeltaSeconds)
@@ -118,8 +105,6 @@ void AtestingCharacter::Tick(float DeltaSeconds)
 				CursorToWorld->SetWorldLocationAndRotation(HitResult.Location, SurfaceRotation);
 			}
 		}
-		
-		/*
 		else if (APlayerController* PC = Cast<APlayerController>(GetController()))
 		{
 			FHitResult TraceHitResult;
@@ -129,9 +114,9 @@ void AtestingCharacter::Tick(float DeltaSeconds)
 			CursorToWorld->SetWorldLocation(TraceHitResult.Location);
 			CursorToWorld->SetWorldRotation(CursorR);
 		}
-		*/
-
 	}
+	//UMyHealthComponent Myhealth;
+	//Myhealth.Damage(3);
 	if (Energy < 100.0f)
 	{
 		Energy += aEnergy;
@@ -148,12 +133,10 @@ void AtestingCharacter::Tick(float DeltaSeconds)
 			dLevel -= 100.0f;
 			aLevel *= 0.8f;
 			Level++;
-			if (Level > 15) 
-			{
+			if (Level > 15) {
 				Level = 15;
 			}
-			else
-			{
+			else{
 				OnLevelChanged();
 			}
 		}
@@ -172,36 +155,14 @@ void AtestingCharacter::OnHealthChanged(UMyHealthComponent* HealthComp, float He
 	}
 }
 
-bool AtestingCharacter::GetInjured(AActor* DamageSource, float fDamageval)
+void AtestingCharacter::GetInjured(AActor* DamageSource, float fDamageval)
 {
-	AtestingCharacter* OtherHero = Cast<AtestingCharacter>(DamageSource);
-	if (OtherHero && OtherHero->bInMySide == this->bInMySide)
-	{
-		return false;
-	}
-	ATinyHero* OtherTiny = Cast<ATinyHero>(DamageSource);
-	if (OtherTiny && OtherTiny->bInMySide == this->bInMySide)
-	{
-		return false;
-	}
-	ATowerActor* OtherTower = Cast<ATowerActor>(DamageSource);
-	if (OtherTower && OtherTower->bInMySide == this->bInMySide)
-	{
-		return false;
-	}
-	ABossTower* OtherBoss = Cast<ABossTower>(DamageSource);
-	if (OtherBoss && OtherBoss->bInMySide == this->bInMySide)
-	{
-		return false;
-	}
-
 	HeroHealth->Damage(fDamageval,Defense);
 
 	if (HeroHealth->JudgeDeath()&&!bDied)
 	{
 		Die();
 	}
-	return true;
 }
 
 void AtestingCharacter::OnLevelChanged()
@@ -210,16 +171,22 @@ void AtestingCharacter::OnLevelChanged()
 	aEnergy *= Level * 0.1 + 1;
 }
 
+void AtestingCharacter::AddResult_Tiny()
+{
+	Result_Tiny++;
+}
+
 void AtestingCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
 }
+
 void AtestingCharacter::Die()
 {
 	PlayDeathEffects();
 	//Destroy();
 }
+
 void AtestingCharacter::PlayDeathEffects()
 {
 	bDied = true;
@@ -227,22 +194,22 @@ void AtestingCharacter::PlayDeathEffects()
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
-void AtestingCharacter::PlayEffectsQ()
+void AtestingCharacter::PlayEffects1()
 {
 	UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectQ, GetActorLocation());
 }
 
-void AtestingCharacter::PlayEffectsW()
+void AtestingCharacter::PlayEffects2()
 {
 	UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectW, GetActorLocation());
 }
 
-void AtestingCharacter::PlayEffectsE()
+void AtestingCharacter::PlayEffects3()
 {
 	UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectE, GetActorLocation());
 }
 
-void AtestingCharacter::PlayEffectsR()
+void AtestingCharacter::PlayEffects4()
 {
 	UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectR, GetActorLocation());
 }
@@ -251,12 +218,24 @@ void AtestingCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	PlayerInputComponent->BindAction("KeyboardQ", IE_Pressed, this, &AtestingCharacter::PlayEffectsQ);
-	PlayerInputComponent->BindAction("KeyboardW", IE_Pressed, this, &AtestingCharacter::PlayEffectsW);
-	PlayerInputComponent->BindAction("KeyboardE", IE_Pressed, this, &AtestingCharacter::PlayEffectsE);
-	PlayerInputComponent->BindAction("KeyboardR", IE_Pressed, this, &AtestingCharacter::PlayEffectsR);
+	PlayerInputComponent->BindAction("Keyboard1", IE_Pressed, this, &AtestingCharacter::PlayEffects1);
+	PlayerInputComponent->BindAction("Keyboard2", IE_Pressed, this, &AtestingCharacter::PlayEffects2);
+	PlayerInputComponent->BindAction("Keyboard3", IE_Pressed, this, &AtestingCharacter::PlayEffects3);
+	PlayerInputComponent->BindAction("Keyboard4", IE_Pressed, this, &AtestingCharacter::PlayEffects4);
 
+	PlayerInputComponent->BindAxis("MoveForward", this, &AtestingCharacter::MoveForward);
+	PlayerInputComponent->BindAxis("MoveRight", this, &AtestingCharacter::MoveRight);
 
+}
+
+void AtestingCharacter::MoveForward(float val)
+{
+	AddMovementInput(GetActorForwardVector()*val);
+}
+
+void AtestingCharacter::MoveRight(float val)
+{
+	AddMovementInput(GetActorRightVector()*val);
 }
 
 
