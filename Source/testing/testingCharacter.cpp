@@ -91,6 +91,9 @@ AtestingCharacter::AtestingCharacter()
 	Level = 1;
 	dLevel = 0.0f;
 	aLevel = 0.3f;
+	Result_Tiny = 0;
+	Result_Hero = 0;
+	Result_Tower = 0;
 }
 
 void AtestingCharacter::Tick(float DeltaSeconds)
@@ -177,6 +180,11 @@ void AtestingCharacter::OnLevelChanged()
 {
 	Defense *= Level * 0.1 + 1;
 	aEnergy *= Level * 0.1 + 1;
+}
+
+void AtestingCharacter::AddResult_Tiny()
+{
+	Result_Tiny++;
 }
 
 void AtestingCharacter::BeginPlay()
