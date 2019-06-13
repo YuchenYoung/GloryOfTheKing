@@ -179,7 +179,6 @@ void AtestingCharacter::AddResult_Tiny()
 void AtestingCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	direction = 1;
 }
 
 void AtestingCharacter::Die()

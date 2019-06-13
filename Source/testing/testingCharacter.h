@@ -104,11 +104,13 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
 	UParticleSystem* SkillEffectR;
 
-	void PlayEffectsQ();
-	void PlayEffectsW();
-	void PlayEffectsE();
-	void PlayEffectsR();
+	void PlayEffects1();
+	void PlayEffects2();
+	void PlayEffects3();
+	void PlayEffects4();
 
+	void MoveForward(float val);
+	void MoveRight(float val);
 public:
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
