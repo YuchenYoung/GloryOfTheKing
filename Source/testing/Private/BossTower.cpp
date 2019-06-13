@@ -10,9 +10,11 @@
 #include "TinyHero.h"
 #include "TowerActor.h"
 #include "GameFramework/DamageType.h"
+#include "Components/WidgetComponent.h"
+#include "Components/ProgressBar.h"
 
 // Sets default values
-ABossTower::ABossTower()
+ABossTower::ABossTower(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -31,6 +33,12 @@ ABossTower::ABossTower()
 	AttackCapsulecomp->SetupAttachment(RootComponent);
 	TowerHealth = CreateDefaultSubobject<UMyHealthComponent>(TEXT("TowerHealth"));
 
+	MyBloodBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("MyBloodBar"));
+	MyBloodBar->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	UClass* Widget = LoadClass<UUserWidget>(NULL, TEXT("WidgetBlueprint'/Game/TopDownCPP/Blueprints/WBP_TowerHealth.WBP_TowerHealth_C'"));
+	MyBloodBar->SetWidgetClass(Widget);
+	
+	
 	fCauseDamage = 0.05f;
 	bIsAttacking = false;
 	bruined = false;
@@ -42,6 +50,16 @@ void ABossTower::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	UUserWidget* CurrentWidget = MyBloodBar->GetUserWidgetObject();
+	if (CurrentWidget != NULL)
+	{
+		HPBarProgress = Cast<UProgressBar>(CurrentWidget->GetWidgetFromName(TEXT("TowerBar")));
+		if (HPBarProgress != NULL)
+		{
+			HPBarProgress->SetPercent(1.0f);
+		}
+	}
+
 }
 
 void ABossTower::PlayEffects()
@@ -58,6 +76,7 @@ void ABossTower::Collapse()
 	bruined = true;
 	Destroy();
 }
+
 
 // Called every frame
 void ABossTower::Tick(float DeltaTime)
@@ -146,6 +165,11 @@ bool ABossTower::GetInjured(AActor* DamageSource, float fDamageval)
 	if (TowerHealth->JudgeDeath())
 	{
 		Collapse();
+	}
+	 
+	if (HPBarProgress != NULL)
+	{
+		HPBarProgress->SetPercent(TowerHealth->HealthLeft());
 	}
 	return true;
 }

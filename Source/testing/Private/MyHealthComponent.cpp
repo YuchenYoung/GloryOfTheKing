@@ -66,3 +66,8 @@ bool UMyHealthComponent::JudgeDeath()
 	return Health <= 0;
 }
 
+float UMyHealthComponent::HealthLeft()
+{
+	return Health / DefaultHealth;
+}
+

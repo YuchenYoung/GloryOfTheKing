@@ -118,6 +118,8 @@ void AtestingCharacter::Tick(float DeltaSeconds)
 				CursorToWorld->SetWorldLocationAndRotation(HitResult.Location, SurfaceRotation);
 			}
 		}
+		
+		/*
 		else if (APlayerController* PC = Cast<APlayerController>(GetController()))
 		{
 			FHitResult TraceHitResult;
@@ -127,9 +129,9 @@ void AtestingCharacter::Tick(float DeltaSeconds)
 			CursorToWorld->SetWorldLocation(TraceHitResult.Location);
 			CursorToWorld->SetWorldRotation(CursorR);
 		}
+		*/
+
 	}
-	//UMyHealthComponent Myhealth;
-	//Myhealth.Damage(3);
 	if (Energy < 100.0f)
 	{
 		Energy += aEnergy;

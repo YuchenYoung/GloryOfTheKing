@@ -46,15 +46,8 @@ public:
 	UPROPERTY( BlueprintReadWrite, Category = "HeroHealth")
 	class UMyHealthComponent* HeroHealth;
 
-
-
-
-
 public:
 	
-	
-
-
 	UFUNCTION()
 	void OnHealthChanged(UMyHealthComponent* HealthComp, float Health, float HealthDelta, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
@@ -83,7 +76,7 @@ protected:
 	bool bDied;
 
 public:
-	UPROPERTY(EditInstanceOnly, Category = "Side")
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Side")
 	bool bInMySide;
 
 protected:

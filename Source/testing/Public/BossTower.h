@@ -12,6 +12,8 @@ using namespace std;
 
 class UCapsuleComponent;
 class UMyHealthComponent;
+class UWidgetComponent;
+class UProgressBar;
 
 UCLASS()
 class TESTING_API ABossTower : public APawn
@@ -32,11 +34,11 @@ public:
 
 public:
 	// Sets default values for this pawn's properties
-	ABossTower();
+	ABossTower(const FObjectInitializer& ObjectInitializer);
 
 protected:
 
-	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Component")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Component")
 	UStaticMeshComponent* Meshcomp;
 	UPROPERTY(VisibleAnywhere, Category = "Component")
 	UCapsuleComponent* Capsulecomp;
@@ -47,12 +49,23 @@ protected:
 	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Health")
 	UMyHealthComponent* TowerHealth;
 
+	UPROPERTY(EditAnywhere, Category = "Component")
+	UWidgetComponent* MyBloodBar;
+
+public:
+	UPROPERTY()
+	UProgressBar* HPBarProgress;
+
+protected:
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	void PlayEffects();
 
 	void Collapse();
+
+
 
 public:	
 	// Called every frame

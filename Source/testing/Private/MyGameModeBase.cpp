@@ -6,12 +6,11 @@
 
 AMyGameModeBase::AMyGameModeBase()
 {
-	TimeBetweenWaves = 2.0f;
+	TimeBetweenWaves = 10.0f;
 }
 
 void AMyGameModeBase::StartWave()
 {
-	WaveCount++;
 	NumberOfTinyToSpawn = 2 * WaveCount;
 	GetWorldTimerManager().SetTimer(TimerHandle_TinySpawner, this, &AMyGameModeBase::SpawnTinyTimerElapsed, 1.0f, true, 0.0f);
 }

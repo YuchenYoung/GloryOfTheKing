@@ -37,7 +37,7 @@ ATinyHero::ATinyHero()
 
 	fCauseDamage = 0.02f;
 	bIsAttacking = false;
-	bInMySide = true;
+	bInMySide = false;
 }
 
 // Called when the game starts or when spawned
