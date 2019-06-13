@@ -8,6 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "testingCharacter.h"
 #include "TinyHero.h"
+#include "TowerActor.h"
 #include "GameFramework/DamageType.h"
 
 // Sets default values
@@ -30,10 +31,10 @@ ABossTower::ABossTower()
 	AttackCapsulecomp->SetupAttachment(RootComponent);
 	TowerHealth = CreateDefaultSubobject<UMyHealthComponent>(TEXT("TowerHealth"));
 
-	fCauseDamage = 0.05;
+	fCauseDamage = 0.05f;
 	bIsAttacking = false;
 	bruined = false;
-
+	bInMySide = true;
 }
 
 // Called when the game starts or when spawned
@@ -97,14 +98,30 @@ void ABossTower::NotifyActorBeginOverlap(AActor* OtherActor)
 	Super::NotifyActorBeginOverlap(OtherActor);
 	if (mWillAttack.find(OtherActor) == mWillAttack.end())
 	{
-		mWillAttack.insert(pair<AActor*, int>(OtherActor, 1));
+		AtestingCharacter* OtherHero = Cast<AtestingCharacter>(OtherActor);
+		if (OtherHero && OtherHero->bInMySide != this->bInMySide)
+		{
+			mWillAttack.insert(pair<AActor*, int>(OtherActor, 1));
+			bIsAttacking = true;
+			return;
+		}
+		ATinyHero* OtherTiny = Cast<ATinyHero>(OtherActor);
+		if (OtherTiny && OtherTiny->bInMySide != this->bInMySide)
+		{
+			mWillAttack.insert(pair<AActor*, int>(OtherActor, 1));
+			bIsAttacking = true;
+			return;
+		}
 	}
-	bIsAttacking = true;
 }
 
 void ABossTower::NotifyActorEndOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorEndOverlap(OtherActor);
+	if (mWillAttack.find(OtherActor) == mWillAttack.end())
+	{
+		return;
+	}
 	mWillAttack.erase(OtherActor);
 	if (mWillAttack.empty())
 	{
@@ -112,12 +129,24 @@ void ABossTower::NotifyActorEndOverlap(AActor* OtherActor)
 	}
 }
 
-void ABossTower::GetInjured(AActor* DamageSource, float fDamageval)
+bool ABossTower::GetInjured(AActor* DamageSource, float fDamageval)
 {
+	AtestingCharacter* OtherHero = Cast<AtestingCharacter>(DamageSource);
+	if (OtherHero && OtherHero->bInMySide == this->bInMySide)
+	{
+		return false;
+	}
+	ATinyHero* OtherTiny = Cast<ATinyHero>(DamageSource);
+	if (OtherTiny && OtherTiny->bInMySide == this->bInMySide)
+	{
+		return false;
+	}
+
 	TowerHealth->Damage(fDamageval, 1);
 	if (TowerHealth->JudgeDeath())
 	{
 		Collapse();
 	}
+	return true;
 }
 

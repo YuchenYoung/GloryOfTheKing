@@ -20,11 +20,15 @@ class TESTING_API ABossTower : public APawn
 
 protected:
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "var")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Var")
 	bool bruined;
 	bool bIsAttacking;
 	float fCauseDamage;
 	map<AActor*, int> mWillAttack;
+
+public:
+	UPROPERTY(EditInstanceOnly, Category = "Side")
+	bool bInMySide;
 
 public:
 	// Sets default values for this pawn's properties
@@ -32,7 +36,7 @@ public:
 
 protected:
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Component")
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Component")
 	UStaticMeshComponent* Meshcomp;
 	UPROPERTY(VisibleAnywhere, Category = "Component")
 	UCapsuleComponent* Capsulecomp;
@@ -59,6 +63,6 @@ public:
 	virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
 
 	UFUNCTION(BlueprintCallable)
-	void GetInjured(AActor* DamageSource, float fDamageval);
+	bool GetInjured(AActor* DamageSource, float fDamageval);
 
 };

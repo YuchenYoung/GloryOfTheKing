@@ -12,7 +12,10 @@
 #include "Materials/Material.h"
 #include "Engine/World.h"
 #include "MyHealthComponent.h"
-#include"Components/PawnNoiseEmitterComponent.h"
+#include "TinyHero.h"
+#include "TowerActor.h"
+#include "BossTower.h"
+#include "Components/PawnNoiseEmitterComponent.h"
 
 #include "Components/InputComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -80,6 +83,8 @@ AtestingCharacter::AtestingCharacter()
 	PrimaryActorTick.bStartWithTickEnabled = true;
 	NoiseEmitterComponent = CreateDefaultSubobject<UPawnNoiseEmitterComponent>(TEXT("NoiseEmitter"));
 	
+	// Set side
+	bInMySide = 1;
 
 	//set default money value
 	Money = 10000;
@@ -141,10 +146,12 @@ void AtestingCharacter::Tick(float DeltaSeconds)
 			dLevel -= 100.0f;
 			aLevel *= 0.8f;
 			Level++;
-			if (Level > 15) {
+			if (Level > 15) 
+			{
 				Level = 15;
 			}
-			else{
+			else
+			{
 				OnLevelChanged();
 			}
 		}
@@ -163,14 +170,36 @@ void AtestingCharacter::OnHealthChanged(UMyHealthComponent* HealthComp, float He
 	}
 }
 
-void AtestingCharacter::GetInjured(AActor* DamageSource, float fDamageval)
+bool AtestingCharacter::GetInjured(AActor* DamageSource, float fDamageval)
 {
+	AtestingCharacter* OtherHero = Cast<AtestingCharacter>(DamageSource);
+	if (OtherHero && OtherHero->bInMySide == this->bInMySide)
+	{
+		return false;
+	}
+	ATinyHero* OtherTiny = Cast<ATinyHero>(DamageSource);
+	if (OtherTiny && OtherTiny->bInMySide == this->bInMySide)
+	{
+		return false;
+	}
+	ATowerActor* OtherTower = Cast<ATowerActor>(DamageSource);
+	if (OtherTower && OtherTower->bInMySide == this->bInMySide)
+	{
+		return false;
+	}
+	ABossTower* OtherBoss = Cast<ABossTower>(DamageSource);
+	if (OtherBoss && OtherBoss->bInMySide == this->bInMySide)
+	{
+		return false;
+	}
+
 	HeroHealth->Damage(fDamageval,Defense);
 
 	if (HeroHealth->JudgeDeath()&&!bDied)
 	{
 		Die();
 	}
+	return true;
 }
 
 void AtestingCharacter::OnLevelChanged()

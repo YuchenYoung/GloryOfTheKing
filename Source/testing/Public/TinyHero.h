@@ -58,6 +58,10 @@ protected:
 
 	map<AActor*, int> mWillAttack;
 
+public:
+	UPROPERTY(EditInstanceOnly, Category = "Side")
+	bool bInMySide;
+
 protected:
 
 	//void MoveToNextPatrolPoint();
@@ -85,7 +89,7 @@ public:
 public:
 
 	UFUNCTION(BlueprintCallable)
-	void GetInjured(AActor* DamageSource, float fDamageval);
+	bool GetInjured(AActor* DamageSource, float fDamageval);
 
 	UPROPERTY(BlueprintReadOnly, Category = "AI")
 	bool bDied;
