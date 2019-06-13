@@ -48,6 +48,9 @@ public:
 	UPROPERTY( BlueprintReadWrite, Category = "HeroHealth")
 	class UMyHealthComponent* HeroHealth;
 
+	UPROPERTY(EditInstanceOnly, Category = "Side")
+		bool bInMySide;
+
 
 
 
@@ -58,7 +61,7 @@ public:
 	void OnHealthChanged(UMyHealthComponent* HealthComp, float Health, float HealthDelta, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
 	UFUNCTION()
-		void GetInjured(AActor* DamageSource, float fDamageval);
+		bool GetInjured(AActor* DamageSource, float fDamageval);
 
 	UFUNCTION()
 		void OnLevelChanged();

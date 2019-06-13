@@ -35,7 +35,7 @@ ATinyHero::ATinyHero()
 
 	TinyHealth = CreateDefaultSubobject<UMyHealthComponent>(TEXT("TinyHealth"));
 
-	fCauseDamage = 0.02f;
+	fCauseDamage = 0.005f;
 	bIsAttacking = false;
 	bInMySide = false;
 }

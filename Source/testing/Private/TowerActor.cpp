@@ -31,7 +31,7 @@ ATowerActor::ATowerActor()
 	AttackCapsulecomp->SetupAttachment(RootComponent);
 	TowerHealth = CreateDefaultSubobject<UMyHealthComponent>(TEXT("TowerHealth"));
 
-	fCauseDamage = 0.05;
+	fCauseDamage = 0.005;
 	bIsAttacking = false;
 	bruined = false;
 	bisfiring = false;

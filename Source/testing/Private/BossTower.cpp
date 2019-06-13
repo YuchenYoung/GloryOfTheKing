@@ -39,7 +39,7 @@ ABossTower::ABossTower(const FObjectInitializer& ObjectInitializer) : Super(Obje
 	MyBloodBar->SetWidgetClass(Widget);
 	
 	
-	fCauseDamage = 0.05f;
+	fCauseDamage = 0.01f;
 	bIsAttacking = false;
 	bruined = false;
 	bInMySide = true;
