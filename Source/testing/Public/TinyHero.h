@@ -27,6 +27,9 @@ public:
 
 protected:
 
+	UPROPERTY(VisibleAnywhere, Category = "Component")
+	UCapsuleComponent* OuterCapsuleComp;
+
 	UPROPERTY(EditInstanceOnly, Category = "AI")
 	bool bPatrol;
 
@@ -47,6 +50,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Effects")
 	UParticleSystem* AttackEffects;
 
+	//FVector NextPathPoint;
+
 	bool bIsAttacking;
 
 	float fCauseDamage;
@@ -65,6 +70,7 @@ protected:
 
 	void PlayEffects();
 	
+	//FVector GetNextPathPoint();
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -77,9 +83,13 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 public:
+
+	UFUNCTION(BlueprintCallable)
 	void GetInjured(AActor* DamageSource, float fDamageval);
+
 	UPROPERTY(BlueprintReadOnly, Category = "AI")
 	bool bDied;
+
 protected:
 	void Die();
 

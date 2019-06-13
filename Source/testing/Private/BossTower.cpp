@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "TowerActor.h"
+#include "BossTower.h"
 #include <map>
 #include "Components/StaticMeshComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -11,9 +11,9 @@
 #include "GameFramework/DamageType.h"
 
 // Sets default values
-ATowerActor::ATowerActor()
+ABossTower::ABossTower()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+ 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	Meshcomp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Meshcomp"));
@@ -33,60 +33,38 @@ ATowerActor::ATowerActor()
 	fCauseDamage = 0.05;
 	bIsAttacking = false;
 	bruined = false;
-	bisfiring = false;
+
 }
 
 // Called when the game starts or when spawned
-void ATowerActor::BeginPlay()
+void ABossTower::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
-void ATowerActor::PlayEffects()
+void ABossTower::PlayEffects()
 {
 	UGameplayStatics::SpawnEmitterAtLocation(this, AttackEffects, GetActorLocation());
 }
 
-void ATowerActor::PlayCollapseEffects()
-{
-	UGameplayStatics::SpawnEmitterAtLocation(this, CollapseEffects, GetActorLocation());
-}
-
-void ATowerActor::GetInjured(AActor* DamageSource, float fDamageval)
-{
-	TowerHealth->Damage(fDamageval,1);
-	if (TowerHealth->JudgeDeath())
-	{
-		Collapse();
-	}
-}
-
-void ATowerActor::Collapse()
+void ABossTower::Collapse()
 {
 	// CollapseEffect();
 	Meshcomp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Capsulecomp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	AttackCapsulecomp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	Meshcomp->SetMaterial(0, RuinMaterial);
 	bruined = true;
-	//PlayCollapseEffects();
 	Destroy();
 }
 
 // Called every frame
-void ATowerActor::Tick(float DeltaTime)
+void ABossTower::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (bruined && bisfiring)
-	{
-		PlayCollapseEffects();
-		return;
-	}
+
 	if (bruined)
 	{
-		bisfiring = true;
-		PlayCollapseEffects();
 		return;
 	}
 	if (bIsAttacking)
@@ -114,7 +92,7 @@ void ATowerActor::Tick(float DeltaTime)
 	}
 }
 
-void ATowerActor::NotifyActorBeginOverlap(AActor* OtherActor)
+void ABossTower::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
 	if (mWillAttack.find(OtherActor) == mWillAttack.end())
@@ -124,13 +102,22 @@ void ATowerActor::NotifyActorBeginOverlap(AActor* OtherActor)
 	bIsAttacking = true;
 }
 
-void ATowerActor::NotifyActorEndOverlap(AActor* OtherActor)
+void ABossTower::NotifyActorEndOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorEndOverlap(OtherActor);
 	mWillAttack.erase(OtherActor);
 	if (mWillAttack.empty())
 	{
 		bIsAttacking = false;
+	}
+}
+
+void ABossTower::GetInjured(AActor* DamageSource, float fDamageval)
+{
+	TowerHealth->Damage(fDamageval, 1);
+	if (TowerHealth->JudgeDeath())
+	{
+		Collapse();
 	}
 }
 

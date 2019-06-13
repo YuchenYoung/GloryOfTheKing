@@ -7,7 +7,7 @@
 
 using namespace UP;
 //OnHealtChanged Event
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_SixParams(FOnHealthChangedSignature, UMyHealthComponent*, HealthComp, float, Health, float, HealthDelta, const class UDamageType*, DamageType, class AController*, InstigatedBy, AActor*, DamageCauser);
+//DECLARE_DYNAMIC_MULTICAST_DELEGATE_SixParams(FOnHealthChangedSignature, UMyHealthComponent*, HealthComp, float, Health, float, HealthDelta, const class UDamageType*, DamageType, class AController*, InstigatedBy, AActor*, DamageCauser);
 UCLASS( ClassGroup=(COOP), meta=(BlueprintSpawnableComponent) )
 class TESTING_API UMyHealthComponent : public UActorComponent
 {
@@ -35,11 +35,14 @@ public:
 
 	bool JudgeDeath();
 
+	/*
 	UFUNCTION()
 	void HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
-
+	*/
+	/*
 	UPROPERTY(BlueprintAssignable,Category="Events")
 	FOnHealthChangedSignature OnHealthChanged;
+	*/
 	/*const class UDamageType* DefaultDamageType;
 	class AController* DefaultConTroller;*/
 
