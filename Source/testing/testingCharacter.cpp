@@ -225,24 +225,75 @@ void AtestingCharacter::PlayDeathEffects()
 
 void AtestingCharacter::PlayEffects1()
 {
+	if (Role < ROLE_Authority)
+	{
+		ServerPlayEffects1();
+	}
 	UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectQ, GetActorLocation());
 }
 
 void AtestingCharacter::PlayEffects2()
 {
+	if (Role < ROLE_Authority)
+	{
+		ServerPlayEffects2();
+	}
 	UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectW, GetActorLocation());
 }
 
 void AtestingCharacter::PlayEffects3()
 {
+	if (Role < ROLE_Authority)
+	{
+		ServerPlayEffects3();
+	}
 	UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectE, GetActorLocation());
 }
 
 void AtestingCharacter::PlayEffects4()
 {
+	if (Role < ROLE_Authority)
+	{
+		ServerPlayEffects4();
+	}
 	UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectR, GetActorLocation());
 }
 
+void AtestingCharacter::ServerPlayEffects1_Implementation()
+{
+	PlayEffects1();
+}
+bool AtestingCharacter::ServerPlayEffects1_Validate()
+{
+	return true;
+}
+
+void AtestingCharacter::ServerPlayEffects2_Implementation()
+{
+	PlayEffects2();
+}
+bool AtestingCharacter::ServerPlayEffects2_Validate()
+{
+	return true;
+}
+
+void AtestingCharacter::ServerPlayEffects3_Implementation()
+{
+	PlayEffects3();
+}
+bool AtestingCharacter::ServerPlayEffects3_Validate()
+{
+	return true;
+}
+
+void AtestingCharacter::ServerPlayEffects4_Implementation()
+{
+	PlayEffects4();
+}
+bool AtestingCharacter::ServerPlayEffects4_Validate()
+{
+	return true;
+}
 void AtestingCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);

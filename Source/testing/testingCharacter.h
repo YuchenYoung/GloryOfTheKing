@@ -11,7 +11,7 @@
 class UPawnNoiseEmitterComponent;
 class UMyhealthComponent;
 using namespace UM;
-
+using namespace UF;
 
 UCLASS(config = Game)
 class AtestingCharacter : public ACharacter
@@ -111,6 +111,16 @@ protected:
 	void PlayEffects2();
 	void PlayEffects3();
 	void PlayEffects4();
+
+	UFUNCTION(Server,Reliable,WithValidation)
+	void ServerPlayEffects1();
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerPlayEffects2();
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerPlayEffects3();
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerPlayEffects4();
+
 
 	void MoveForward(float val);
 	void MoveRight(float val);
