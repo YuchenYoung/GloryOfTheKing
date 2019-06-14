@@ -38,6 +38,11 @@ void UMyHealthComponent::BeginPlay()
 
 }
 
+void UMyHealthComponent::InitialHealth()
+{
+	Health = DefaultHealth;
+}
+
 void UMyHealthComponent::Damage(float Damageval,float Defense)
 {
 	Health -= Defense * Damageval;

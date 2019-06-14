@@ -78,13 +78,15 @@ AtestingCharacter::AtestingCharacter()
 	NoiseEmitterComponent = CreateDefaultSubobject<UPawnNoiseEmitterComponent>(TEXT("NoiseEmitter"));
 	
 
-
+	bdied = false;
 	bInMySide = true;
+	RestartTime = 0;
 
 	//set default money value
 	Money = 10000;
 	dMoney = 0;
 	aMoney = 1;
+
 	//set default attribution
 	AttackValue = 20.0f;
 	Defense = 1.0f;
@@ -103,7 +105,21 @@ void AtestingCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
 
-	
+	if (RestartTime > 0)
+	{
+		if (RestartTime < 100)
+		{
+			RestartTime++;
+		}
+		else
+		{
+			SetActorLocation(FVector(-1775, -1470, 243));
+			RestartTime = 0;
+			bdied = false;
+			HeroHealth->InitialHealth();
+			SetActorHiddenInGame(false);
+		}
+	}
 
 	if (CursorToWorld != nullptr)
 	{
@@ -131,8 +147,7 @@ void AtestingCharacter::Tick(float DeltaSeconds)
 			CursorToWorld->SetWorldRotation(CursorR);
 		}
 	}
-	//UMyHealthComponent Myhealth;
-	//Myhealth.Damage(3);
+	
 	if (Energy < 100.0f)
 	{
 		Energy += aEnergy;
@@ -149,23 +164,28 @@ void AtestingCharacter::Tick(float DeltaSeconds)
 			dLevel -= 100.0f;
 			aLevel *= 0.8f;
 			Level++;
-			if (Level > 15) {
+			if (Level > 15) 
+			{
 				Level = 15;
 			}
-			else{
+			else
+			{
 				OnLevelChanged();
 			}
 		}
 	}
-	if (dMoney < 100) {
+	if (dMoney < 100)
+	{
 		dMoney += aMoney;
 	}
-	if (dMoney == 100) {
+	if (dMoney == 100) 
+	{
 		Money += dMoney;
 		dMoney = 0;
 	}
 }
 
+/*
 void AtestingCharacter::OnHealthChanged(UMyHealthComponent* HealthComp, float Health, float HealthDelta, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
 {
 	if (Health <= 0.0f && !bDied)
@@ -177,6 +197,7 @@ void AtestingCharacter::OnHealthChanged(UMyHealthComponent* HealthComp, float He
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 }
+*/
 
 bool AtestingCharacter::GetInjured(AActor* DamageSource, float fDamageval)
 {
@@ -204,7 +225,7 @@ bool AtestingCharacter::GetInjured(AActor* DamageSource, float fDamageval)
 
 	HeroHealth->Damage(fDamageval, Defense);
 
-	if (HeroHealth->JudgeDeath() && !bDied)
+	if (HeroHealth->JudgeDeath() && RestartTime == 0)
 	{
 		Die();
 	}
@@ -229,16 +250,21 @@ void AtestingCharacter::BeginPlay()
 
 void AtestingCharacter::Die()
 {
-	PlayDeathEffects();
+	RestartTime = 1;
+	bdied = true;
+	SetActorHiddenInGame(true);
+	//PlayDeathEffects();
 	//Destroy();
 }
 
+/*
 void AtestingCharacter::PlayDeathEffects()
 {
 	bDied = true;
 	GetMovementComponent()->StopMovementImmediately();
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
+*/
 
 void AtestingCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
 {
@@ -393,12 +419,12 @@ void AtestingCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 void AtestingCharacter::MoveForward(float val)
 {
-	AddMovementInput(GetActorForwardVector()*val);
+	AddMovementInput(GetActorForwardVector() * val);
 }
 
 void AtestingCharacter::MoveRight(float val)
 {
-	AddMovementInput(GetActorRightVector()*val);
+	AddMovementInput(GetActorRightVector() * val);
 }
 
 

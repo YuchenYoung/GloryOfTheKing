@@ -51,7 +51,7 @@ private:
 	map<AActor*, int> mWillAttackByEffects;
 	bool bIsAttackByEffects;
 	float fdamageByEffect1;
-
+	int32 RestartTime;
 
 protected:
 
@@ -65,14 +65,12 @@ public:
 	UPROPERTY(EditInstanceOnly, Category = "Side")
 	bool bInMySide;
 
-
-
-
-
 public:
 	
+	/*
 	UFUNCTION()
 	void OnHealthChanged(UMyHealthComponent* HealthComp, float Health, float HealthDelta, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
+	*/
 
 	UFUNCTION()
 	bool GetInjured(AActor* DamageSource, float fDamageval);
@@ -81,6 +79,8 @@ public:
 	void OnLevelChanged();
 	UFUNCTION()
 	void AddResult_Tiny();
+	UPROPERTY(BlueprintReadWrite, Category = "Statics")
+	bool bdied;
 	UPROPERTY(BlueprintReadWrite, Category = "Money")
 	int Money;
 	UPROPERTY(BlueprintReadWrite, Category = "Money")
@@ -108,10 +108,8 @@ public:
 	int Result_Tower;
 
 protected:
-	UPROPERTY(BlueprintReadOnly,Category="Player")
-	bool bDied;
 	void Die();
-	void PlayDeathEffects();
+	//void PlayDeathEffects();
 	void NotifyActorBeginOverlap(AActor* OtherActor);
 	void NotifyActorEndOverlap(AActor* OtherActor);
 	void BeginPlay();
