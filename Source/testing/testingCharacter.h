@@ -1,17 +1,21 @@
 // Copyright 1998-2019 Epic Games, Inc. All Rights Reserved.
 
 #pragma once
-
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "MyHealthComponent.h"
+#include <map>
 #include "testingCharacter.generated.h"
+
 
 
 class UPawnNoiseEmitterComponent;
 class UMyhealthComponent;
+class UCapsuleComponent;
+
 using namespace UM;
 using namespace UF;
+using namespace std;
 
 UCLASS(config = Game)
 class AtestingCharacter : public ACharacter
@@ -44,6 +48,16 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UDecalComponent* CursorToWorld;
 
+	map<AActor*, int> mWillAttackByEffects;
+	bool bIsAttackByEffects;
+	float fdamageByEffect1;
+
+
+protected:
+
+	UPROPERTY(VisibleAnywhere, Category = "Component")
+	UCapsuleComponent* SkillComp;
+
 public:
 	UPROPERTY( BlueprintReadWrite, Category = "HeroHealth")
 	class UMyHealthComponent* HeroHealth;
@@ -69,6 +83,10 @@ public:
 	void AddResult_Tiny();
 	UPROPERTY(BlueprintReadWrite, Category = "Money")
 	int Money;
+	UPROPERTY(BlueprintReadWrite, Category = "Money")
+	int dMoney;
+	UPROPERTY(BlueprintReadWrite, Category = "Money")
+	int aMoney;
 	UPROPERTY(BlueprintReadWrite, Category = "Attribute")
 	float AttackValue;
 	UPROPERTY(BlueprintReadWrite, Category = "Attribute")
@@ -88,11 +106,14 @@ public:
 	int Result_Hero;
 	UPROPERTY(BlueprintReadWrite, Category = "Result")
 	int Result_Tower;
+
 protected:
 	UPROPERTY(BlueprintReadOnly,Category="Player")
 	bool bDied;
 	void Die();
 	void PlayDeathEffects();
+	void NotifyActorBeginOverlap(AActor* OtherActor);
+	void NotifyActorEndOverlap(AActor* OtherActor);
 	void BeginPlay();
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category ="AI", meta = (AllowPrivateAccess = "true"))
 	UPawnNoiseEmitterComponent* NoiseEmitterComponent;
