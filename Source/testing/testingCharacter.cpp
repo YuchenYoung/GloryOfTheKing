@@ -96,6 +96,8 @@ void AtestingCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
 
+	
+
 	if (CursorToWorld != nullptr)
 	{
 		if (UHeadMountedDisplayFunctionLibrary::IsHeadMountedDisplayEnabled())
@@ -165,6 +167,7 @@ void AtestingCharacter::OnHealthChanged(UMyHealthComponent* HealthComp, float He
 bool AtestingCharacter::GetInjured(AActor* DamageSource, float fDamageval)
 {
 	AtestingCharacter* OtherHero = Cast<AtestingCharacter>(DamageSource);
+	
 	if (OtherHero && OtherHero->bInMySide == this->bInMySide)
 	{
 		return false;
