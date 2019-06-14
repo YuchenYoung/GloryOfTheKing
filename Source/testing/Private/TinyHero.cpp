@@ -35,8 +35,9 @@ ATinyHero::ATinyHero()
 
 	TinyHealth = CreateDefaultSubobject<UMyHealthComponent>(TEXT("TinyHealth"));
 
-	fCauseDamage = 0.05;
+	fCauseDamage = 0.005f;
 	bIsAttacking = false;
+	bInMySide = false;
 }
 
 // Called when the game starts or when spawned
@@ -179,13 +180,40 @@ void ATinyHero::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	
 }
 
-void ATinyHero::GetInjured(AActor* DamageSource, float fDamageval)
+bool ATinyHero::GetInjured(AActor* DamageSource, float fDamageval)
 {
+	AtestingCharacter* OtherHero = Cast<AtestingCharacter>(DamageSource);
+	if (OtherHero && OtherHero->bInMySide == this->bInMySide)
+	{
+		return false;
+	}
+	ATinyHero* OtherTiny = Cast<ATinyHero>(DamageSource);
+	if (OtherTiny && OtherTiny->bInMySide == this->bInMySide)
+	{
+		return false;
+	}
+	ATowerActor* OtherTower = Cast<ATowerActor>(DamageSource);
+	if (OtherTower && OtherTower->bInMySide == this->bInMySide)
+	{
+		return false;
+	}
+	ABossTower* OtherBoss = Cast<ABossTower>(DamageSource);
+	if (OtherBoss && OtherBoss->bInMySide == this->bInMySide)
+	{
+		return false;
+	}
+
 	TinyHealth->Damage(fDamageval, 1);
 	if (TinyHealth->JudgeDeath())
 	{
+		AtestingCharacter* SourceHero = Cast<AtestingCharacter>(DamageSource);
+		if (SourceHero)
+		{
+			SourceHero->AddResult_Tiny();
+		}
 		Die();
 	}
+	return true;
 }
 
 void ATinyHero::Die()
@@ -200,14 +228,44 @@ void ATinyHero::NotifyActorBeginOverlap(AActor* OtherActor)
 	Super::NotifyActorBeginOverlap(OtherActor);
 	if (mWillAttack.find(OtherActor) == mWillAttack.end())
 	{
-		mWillAttack.insert(pair<AActor*, int>(OtherActor, 1));
+		AtestingCharacter* OtherHero = Cast<AtestingCharacter>(OtherActor);
+		if (OtherHero && OtherHero->bInMySide != this->bInMySide)
+		{
+			mWillAttack.insert(pair<AActor*, int>(OtherActor, 1));
+			bIsAttacking = true;
+			return;
+		}
+		ATinyHero* OtherTiny = Cast<ATinyHero>(OtherActor);
+		if (OtherTiny && OtherTiny->bInMySide != this->bInMySide)
+		{
+			mWillAttack.insert(pair<AActor*, int>(OtherActor, 1));
+			bIsAttacking = true;
+			return;
+		}
+		ATowerActor* OtherTower = Cast<ATowerActor>(OtherActor);
+		if (OtherTower && OtherTower->bInMySide != this->bInMySide)
+		{
+			mWillAttack.insert(pair<AActor*, int>(OtherActor, 1));
+			bIsAttacking = true;
+			return;
+		}
+		ABossTower* OtherBoss = Cast<ABossTower>(OtherActor);
+		if (OtherBoss && OtherBoss->bInMySide != this->bInMySide)
+		{
+			mWillAttack.insert(pair<AActor*, int>(OtherActor, 1));
+			bIsAttacking = true;
+			return;
+		}
 	}
-	bIsAttacking = true;
 }
 
 void ATinyHero::NotifyActorEndOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorEndOverlap(OtherActor);
+	if (mWillAttack.find(OtherActor) == mWillAttack.end())
+	{
+		return;
+	}
 	mWillAttack.erase(OtherActor);
 	if (mWillAttack.empty())
 	{

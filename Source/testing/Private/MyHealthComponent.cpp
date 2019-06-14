@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "MyHealthComponent.h"
-#include"GameFramework/DamageType.h"
-#include"GameFramework/Controller.h"
-#include"TinyHero.h"
+#include "GameFramework/DamageType.h"
+#include "GameFramework/Controller.h"
+#include "TinyHero.h"
 
 // Sets default values for this component's properties
 UMyHealthComponent::UMyHealthComponent()
@@ -64,5 +64,10 @@ void UMyHealthComponent::HandleTakeAnyDamage(AActor* DamagedActor, float Damage,
 bool UMyHealthComponent::JudgeDeath()
 {
 	return Health <= 0;
+}
+
+float UMyHealthComponent::HealthLeft()
+{
+	return Health / DefaultHealth;
 }
 

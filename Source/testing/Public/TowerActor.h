@@ -27,6 +27,10 @@ protected:
 	float fCauseDamage;
 	map<AActor*, int> mWillAttack;
 
+public:
+	UPROPERTY(EditInstanceOnly, Category = "Side")
+	bool bInMySide;
+
 public:	
 	// Sets default values for this actor's properties
 	ATowerActor();
@@ -65,5 +69,5 @@ public:
 	virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
 
 	UFUNCTION(BlueprintCallable)
-	void GetInjured(AActor* DamageSource, float fDamageval);
+	bool GetInjured(AActor* DamageSource, float fDamageval);
 };
