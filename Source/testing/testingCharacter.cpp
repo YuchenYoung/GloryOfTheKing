@@ -1,6 +1,7 @@
 // Copyright 1998-2019 Epic Games, Inc. All Rights Reserved.
 
 #include "testingCharacter.h"
+#include <map>
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
 #include "Components/DecalComponent.h"
@@ -20,7 +21,7 @@
 #include "TowerActor.h"
 #include "BossTower.h"
 
-
+using namespace std;
 
 AtestingCharacter::AtestingCharacter()
 {
@@ -35,6 +36,9 @@ AtestingCharacter::AtestingCharacter()
 	// Don't rotate character to camera direction
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
+
+	SkillComp = CreateDefaultSubobject<UCapsuleComponent>(TEXT("SkillComp"));
+	SkillComp->SetupAttachment(RootComponent);
 
 	// Configure character movement
 	// Rotate character to moving direction
@@ -79,10 +83,12 @@ AtestingCharacter::AtestingCharacter()
 
 	//set default money value
 	Money = 10000;
+	dMoney = 0;
+	aMoney = 1;
 	//set default attribution
 	AttackValue = 20.0f;
 	Defense = 1.0f;
-	Energy = 10.0f;
+	Energy = 100.0f;
 	aEnergy = 0.01f;
 	Level = 1;
 	dLevel = 0.0f;
@@ -90,6 +96,7 @@ AtestingCharacter::AtestingCharacter()
 	Result_Tiny = 0;
 	Result_Hero = 0;
 	Result_Tower = 0;
+	fdamageByEffect1 =20.0f;
 }
 
 void AtestingCharacter::Tick(float DeltaSeconds)
@@ -147,6 +154,13 @@ void AtestingCharacter::Tick(float DeltaSeconds)
 				OnLevelChanged();
 			}
 		}
+	}
+	if (dMoney < 100) {
+		dMoney += aMoney;
+	}
+	if (dMoney == 100) {
+		Money += dMoney;
+		dMoney = 0;
 	}
 }
 
@@ -223,6 +237,56 @@ void AtestingCharacter::PlayDeathEffects()
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
+void AtestingCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
+{
+	Super::NotifyActorBeginOverlap(OtherActor);
+	if (mWillAttackByEffects.find(OtherActor) == mWillAttackByEffects.end())
+	{
+		AtestingCharacter* OtherHero = Cast<AtestingCharacter>(OtherActor);
+		if (OtherHero && OtherHero->bInMySide != this->bInMySide)
+		{
+			mWillAttackByEffects.insert(pair<AActor*, int>(OtherActor, 1));
+			bIsAttackByEffects = true;
+			return;
+		}
+		ATinyHero* OtherTiny = Cast<ATinyHero>(OtherActor);
+		if (OtherTiny && OtherTiny->bInMySide != this->bInMySide)
+		{
+			mWillAttackByEffects.insert(pair<AActor*, int>(OtherActor, 1));
+			bIsAttackByEffects = true;
+			return;
+		}
+		ATowerActor* OtherTower = Cast<ATowerActor>(OtherActor);
+		if (OtherTower && OtherTower->bInMySide != this->bInMySide)
+		{
+			mWillAttackByEffects.insert(pair<AActor*, int>(OtherActor, 1));
+			bIsAttackByEffects = true;
+			return;
+		}
+		ABossTower* OtherBoss = Cast<ABossTower>(OtherActor);
+		if (OtherBoss && OtherBoss->bInMySide != this->bInMySide)
+		{
+			mWillAttackByEffects.insert(pair<AActor*, int>(OtherActor, 1));
+			bIsAttackByEffects = true;
+			return;
+		}
+	}
+}
+
+void AtestingCharacter::NotifyActorEndOverlap(AActor* OtherActor)
+{
+	Super::NotifyActorEndOverlap(OtherActor);
+	if (mWillAttackByEffects.find(OtherActor) == mWillAttackByEffects.end())
+	{
+		return;
+	}
+	mWillAttackByEffects.erase(OtherActor);
+	if (mWillAttackByEffects.empty())
+	{
+		bIsAttackByEffects = false;
+	}
+}
+
 void AtestingCharacter::PlayEffects1()
 {
 	if (Role < ROLE_Authority)
@@ -230,6 +294,7 @@ void AtestingCharacter::PlayEffects1()
 		ServerPlayEffects1();
 	}
 	UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectQ, GetActorLocation());
+	
 }
 
 void AtestingCharacter::PlayEffects2()
@@ -238,7 +303,22 @@ void AtestingCharacter::PlayEffects2()
 	{
 		ServerPlayEffects2();
 	}
+	if (Energy < 10.0f)return;
 	UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectW, GetActorLocation());
+	Energy -= 10.0f;
+	if (bIsAttackByEffects)
+	{
+		map<AActor*, int>::iterator iToAttackByEffects1;
+		for (iToAttackByEffects1 = mWillAttackByEffects.begin(); iToAttackByEffects1 != mWillAttackByEffects.end(); iToAttackByEffects1++)
+		{
+			AActor* ATemp = iToAttackByEffects1->first;
+			ATinyHero* InjuredObject = Cast<ATinyHero>(ATemp);
+			if (InjuredObject)
+			{
+				InjuredObject->GetInjured(this, this->fdamageByEffect1);
+			}
+		}
+	}
 }
 
 void AtestingCharacter::PlayEffects3()
