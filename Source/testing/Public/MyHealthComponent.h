@@ -28,7 +28,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HealthComponent")
 	float DefaultHealth;
 
-
+	void InitialHealth();
 
 	UFUNCTION()
 	void Damage(float Damageval, float Defense);
