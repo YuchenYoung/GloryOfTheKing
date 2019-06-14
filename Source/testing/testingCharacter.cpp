@@ -12,10 +12,14 @@
 #include "Materials/Material.h"
 #include "Engine/World.h"
 #include "MyHealthComponent.h"
-#include"Components/PawnNoiseEmitterComponent.h"
+#include "Components/PawnNoiseEmitterComponent.h"
 #include "Components/InputComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/CapsuleComponent.h"
+#include "TinyHero.h"
+#include "TowerActor.h"
+#include "BossTower.h"
+
 
 
 AtestingCharacter::AtestingCharacter()
@@ -69,6 +73,9 @@ AtestingCharacter::AtestingCharacter()
 	PrimaryActorTick.bStartWithTickEnabled = true;
 	NoiseEmitterComponent = CreateDefaultSubobject<UPawnNoiseEmitterComponent>(TEXT("NoiseEmitter"));
 	
+
+
+	bInMySide = true;
 
 	//set default money value
 	Money = 10000;
@@ -155,14 +162,36 @@ void AtestingCharacter::OnHealthChanged(UMyHealthComponent* HealthComp, float He
 	}
 }
 
-void AtestingCharacter::GetInjured(AActor* DamageSource, float fDamageval)
+bool AtestingCharacter::GetInjured(AActor* DamageSource, float fDamageval)
 {
-	HeroHealth->Damage(fDamageval,Defense);
+	AtestingCharacter* OtherHero = Cast<AtestingCharacter>(DamageSource);
+	if (OtherHero && OtherHero->bInMySide == this->bInMySide)
+	{
+		return false;
+	}
+	ATinyHero* OtherTiny = Cast<ATinyHero>(DamageSource);
+	if (OtherTiny && OtherTiny->bInMySide == this->bInMySide)
+	{
+		return false;
+	}
+	ATowerActor* OtherTower = Cast<ATowerActor>(DamageSource);
+	if (OtherTower && OtherTower->bInMySide == this->bInMySide)
+	{
+		return false;
+	}
+	ABossTower* OtherBoss = Cast<ABossTower>(DamageSource);
+	if (OtherBoss && OtherBoss->bInMySide == this->bInMySide)
+	{
+		return false;
+	}
 
-	if (HeroHealth->JudgeDeath()&&!bDied)
+	HeroHealth->Damage(fDamageval, Defense);
+
+	if (HeroHealth->JudgeDeath() && !bDied)
 	{
 		Die();
 	}
+	return true;
 }
 
 void AtestingCharacter::OnLevelChanged()
@@ -196,24 +225,75 @@ void AtestingCharacter::PlayDeathEffects()
 
 void AtestingCharacter::PlayEffects1()
 {
+	if (Role < ROLE_Authority)
+	{
+		ServerPlayEffects1();
+	}
 	UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectQ, GetActorLocation());
 }
 
 void AtestingCharacter::PlayEffects2()
 {
+	if (Role < ROLE_Authority)
+	{
+		ServerPlayEffects2();
+	}
 	UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectW, GetActorLocation());
 }
 
 void AtestingCharacter::PlayEffects3()
 {
+	if (Role < ROLE_Authority)
+	{
+		ServerPlayEffects3();
+	}
 	UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectE, GetActorLocation());
 }
 
 void AtestingCharacter::PlayEffects4()
 {
+	if (Role < ROLE_Authority)
+	{
+		ServerPlayEffects4();
+	}
 	UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectR, GetActorLocation());
 }
 
+void AtestingCharacter::ServerPlayEffects1_Implementation()
+{
+	PlayEffects1();
+}
+bool AtestingCharacter::ServerPlayEffects1_Validate()
+{
+	return true;
+}
+
+void AtestingCharacter::ServerPlayEffects2_Implementation()
+{
+	PlayEffects2();
+}
+bool AtestingCharacter::ServerPlayEffects2_Validate()
+{
+	return true;
+}
+
+void AtestingCharacter::ServerPlayEffects3_Implementation()
+{
+	PlayEffects3();
+}
+bool AtestingCharacter::ServerPlayEffects3_Validate()
+{
+	return true;
+}
+
+void AtestingCharacter::ServerPlayEffects4_Implementation()
+{
+	PlayEffects4();
+}
+bool AtestingCharacter::ServerPlayEffects4_Validate()
+{
+	return true;
+}
 void AtestingCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
