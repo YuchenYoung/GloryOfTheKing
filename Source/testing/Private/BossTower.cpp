@@ -10,6 +10,7 @@
 #include "TinyHero.h"
 #include "TowerActor.h"
 #include "GameFramework/DamageType.h"
+#include "MyGameModeBase.h"
 #include "Components/WidgetComponent.h"
 #include "Components/ProgressBar.h"
 
@@ -81,6 +82,12 @@ void ABossTower::Collapse()
 	Capsulecomp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	AttackCapsulecomp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	bruined = true;
+
+	AMyGameModeBase* GM = Cast<AMyGameModeBase>(GetWorld()->GetAuthGameMode());
+	if (GM)
+	{
+		GM->JudgeGameOver(bInMySide);
+	}
 	Destroy();
 }
 

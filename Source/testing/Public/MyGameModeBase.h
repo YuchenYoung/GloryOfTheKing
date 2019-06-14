@@ -10,6 +10,7 @@ using namespace UF;
 using namespace UM;
 using namespace UP;
 
+
 UCLASS()
 class TESTING_API AMyGameModeBase : public AGameModeBase
 {
@@ -30,11 +31,21 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "GameMode")
 	int32 TimeBetweenWaves;
 
+
 protected:
+
 
 	// Spawn a single tinyhero;
 	UFUNCTION(BlueprintImplementableEvent, Category = "GameMode")
 	void SpawnNewTiny();
+
+	
+	UFUNCTION(BlueprintImplementableEvent, Category = "GameMode")
+	void GameOverWin();
+	
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "GameMode")
+	void GameOverLose();
 
 	void SpawnTinyTimerElapsed();
 
@@ -47,4 +58,8 @@ protected:
 public:
 
 	virtual void StartPlay() override;
+
+	void JudgeGameOver(bool InMySide);
+
+
 };
