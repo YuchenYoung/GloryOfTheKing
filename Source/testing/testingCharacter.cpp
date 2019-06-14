@@ -218,11 +218,24 @@ void AtestingCharacter::Die()
 
 void AtestingCharacter::PlayDeathEffects()
 {
+	if (Role < ROLE_Authority)
+	{
+		ServerPlayDeathEffects();
+	}
+	
 	bDied = true;
 	GetMovementComponent()->StopMovementImmediately();
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
+void AtestingCharacter::ServerPlayDeathEffects_Implementation()
+{
+	PlayDeathEffects();
+}
+bool AtestingCharacter::ServerPlayDeathEffects_Validate()
+{
+	return true;
+}
 void AtestingCharacter::PlayEffects1()
 {
 	if (Role < ROLE_Authority)

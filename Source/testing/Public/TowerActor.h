@@ -60,6 +60,9 @@ protected:
 	void PlayCollapseEffects();
 
 	void Collapse();
+	
+	UFUNCTION(Server,Reliable,WithValidation)
+	void ServerCollapse();
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

@@ -57,10 +57,10 @@ public:
 
 public:
 	
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void OnHealthChanged(UMyHealthComponent* HealthComp, float Health, float HealthDelta, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	bool GetInjured(AActor* DamageSource, float fDamageval);
 
 	UFUNCTION()
@@ -91,8 +91,12 @@ public:
 protected:
 	UPROPERTY(BlueprintReadOnly,Category="Player")
 	bool bDied;
+
 	void Die();
 	void PlayDeathEffects();
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerPlayDeathEffects();
+
 	void BeginPlay();
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category ="AI", meta = (AllowPrivateAccess = "true"))
 	UPawnNoiseEmitterComponent* NoiseEmitterComponent;

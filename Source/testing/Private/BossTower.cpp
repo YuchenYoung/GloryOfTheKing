@@ -32,17 +32,18 @@ ABossTower::ABossTower(const FObjectInitializer& ObjectInitializer) : Super(Obje
 	AttackCapsulecomp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 	AttackCapsulecomp->SetupAttachment(RootComponent);
 	TowerHealth = CreateDefaultSubobject<UMyHealthComponent>(TEXT("TowerHealth"));
-
+	TowerHealth->SetIsReplicated(true);
 	MyBloodBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("MyBloodBar"));
 	MyBloodBar->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	UClass* Widget = LoadClass<UUserWidget>(NULL, TEXT("WidgetBlueprint'/Game/TopDownCPP/Blueprints/WBP_TowerHealth.WBP_TowerHealth_C'"));
 	MyBloodBar->SetWidgetClass(Widget);
-	
+	MyBloodBar->SetIsReplicated(true);
 	
 	fCauseDamage = 0.01f;
 	bIsAttacking = false;
 	bruined = false;
 	bInMySide = true;
+	bReplicates = true;
 }
 
 // Called when the game starts or when spawned
@@ -54,6 +55,7 @@ void ABossTower::BeginPlay()
 	if (CurrentWidget != NULL)
 	{
 		HPBarProgress = Cast<UProgressBar>(CurrentWidget->GetWidgetFromName(TEXT("TowerBar")));
+		
 		if (HPBarProgress != NULL)
 		{
 			HPBarProgress->SetPercent(1.0f);
@@ -69,6 +71,11 @@ void ABossTower::PlayEffects()
 
 void ABossTower::Collapse()
 {
+	if (Role < ROLE_Authority)
+	{
+		ServerCollapse();
+	}
+	
 	// CollapseEffect();
 	Meshcomp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Capsulecomp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -77,6 +84,14 @@ void ABossTower::Collapse()
 	Destroy();
 }
 
+void ABossTower::ServerCollapse_Implementation()
+{
+	Collapse();
+}
+bool ABossTower::ServerCollapse_Validate()
+{
+	return true;
+}
 
 // Called every frame
 void ABossTower::Tick(float DeltaTime)
@@ -150,6 +165,11 @@ void ABossTower::NotifyActorEndOverlap(AActor* OtherActor)
 
 bool ABossTower::GetInjured(AActor* DamageSource, float fDamageval)
 {
+	if (Role < ROLE_Authority)
+	{
+		ServerGetInjured(DamageSource, fDamageval);
+	}
+	
 	AtestingCharacter* OtherHero = Cast<AtestingCharacter>(DamageSource);
 	if (OtherHero && OtherHero->bInMySide == this->bInMySide)
 	{
@@ -174,3 +194,11 @@ bool ABossTower::GetInjured(AActor* DamageSource, float fDamageval)
 	return true;
 }
 
+void ABossTower::ServerGetInjured_Implementation(AActor * DamageSource, float fDamageval)
+{
+	GetInjured(DamageSource, fDamageval);
+}
+bool ABossTower::ServerGetInjured_Validate(AActor * DamageSource, float fDamageval)
+{
+	return true;
+}

@@ -11,5 +11,7 @@ public class testing : ModuleRules
         PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "NavigationSystem", "AIModule", "GameplayAbilities", "UMG" });
 
         PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore"});
+
+        PrivateDependencyModuleNames.AddRange(new string[] { "OnlineSubsystemNull" });
     }
 }
