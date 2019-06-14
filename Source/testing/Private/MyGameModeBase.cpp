@@ -3,10 +3,14 @@
 
 #include "MyGameModeBase.h"
 #include "TimerManager.h"
+#include "Components/WidgetComponent.h"
+#include "Components/Image.h"
+#include "Components/SlateWrapperTypes.h"
 
 AMyGameModeBase::AMyGameModeBase()
 {
 	TimeBetweenWaves = 10.0f;
+
 }
 
 void AMyGameModeBase::StartWave()
@@ -34,6 +38,7 @@ void AMyGameModeBase::StartPlay()
 	PrepareForNextWave();
 }
 
+
 void AMyGameModeBase::SpawnTinyTimerElapsed()
 {
 	SpawnNewTiny();
@@ -41,5 +46,17 @@ void AMyGameModeBase::SpawnTinyTimerElapsed()
 	if (NumberOfTinyToSpawn <= 0)
 	{
 		EndWave();
+	}
+}
+
+void AMyGameModeBase::JudgeGameOver(bool InMySide)
+{
+	if (!InMySide)
+	{
+		GameOverWin();
+	}
+	else
+	{
+		GameOverLose();
 	}
 }
