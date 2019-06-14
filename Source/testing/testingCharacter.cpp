@@ -13,17 +13,9 @@
 #include "Engine/World.h"
 #include "MyHealthComponent.h"
 #include"Components/PawnNoiseEmitterComponent.h"
-
 #include "Components/InputComponent.h"
 #include "Kismet/GameplayStatics.h"
-
 #include "Components/CapsuleComponent.h"
-
-
-	
-
-
-
 
 
 AtestingCharacter::AtestingCharacter()
@@ -39,13 +31,10 @@ AtestingCharacter::AtestingCharacter()
 	// Don't rotate character to camera direction
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
-	bUseControllerRotationRoll = false;
 
 	// Configure character movement
-	GetCharacterMovement()->bOrientRotationToMovement = true; // Rotate character to moving direction
-	GetCharacterMovement()->RotationRate = FRotator(0.f, 640.f, 0.f);
-	GetCharacterMovement()->bConstrainToPlane = true;
-	GetCharacterMovement()->bSnapToPlaneAtStart = true;
+	// Rotate character to moving direction
+
 
 	// Create a camera boom...
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
@@ -182,13 +171,15 @@ void AtestingCharacter::OnLevelChanged()
 void AtestingCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
+	direction = 1;
 }
+
 void AtestingCharacter::Die()
 {
 	PlayDeathEffects();
 	//Destroy();
 }
+
 void AtestingCharacter::PlayDeathEffects()
 {
 	bDied = true;
@@ -196,22 +187,22 @@ void AtestingCharacter::PlayDeathEffects()
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
-void AtestingCharacter::PlayEffectsQ()
+void AtestingCharacter::PlayEffects1()
 {
 	UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectQ, GetActorLocation());
 }
 
-void AtestingCharacter::PlayEffectsW()
+void AtestingCharacter::PlayEffects2()
 {
 	UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectW, GetActorLocation());
 }
 
-void AtestingCharacter::PlayEffectsE()
+void AtestingCharacter::PlayEffects3()
 {
 	UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectE, GetActorLocation());
 }
 
-void AtestingCharacter::PlayEffectsR()
+void AtestingCharacter::PlayEffects4()
 {
 	UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectR, GetActorLocation());
 }
@@ -220,12 +211,24 @@ void AtestingCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	PlayerInputComponent->BindAction("KeyboardQ", IE_Pressed, this, &AtestingCharacter::PlayEffectsQ);
-	PlayerInputComponent->BindAction("KeyboardW", IE_Pressed, this, &AtestingCharacter::PlayEffectsW);
-	PlayerInputComponent->BindAction("KeyboardE", IE_Pressed, this, &AtestingCharacter::PlayEffectsE);
-	PlayerInputComponent->BindAction("KeyboardR", IE_Pressed, this, &AtestingCharacter::PlayEffectsR);
+	PlayerInputComponent->BindAction("Keyboard1", IE_Pressed, this, &AtestingCharacter::PlayEffects1);
+	PlayerInputComponent->BindAction("Keyboard2", IE_Pressed, this, &AtestingCharacter::PlayEffects2);
+	PlayerInputComponent->BindAction("Keyboard3", IE_Pressed, this, &AtestingCharacter::PlayEffects3);
+	PlayerInputComponent->BindAction("Keyboard4", IE_Pressed, this, &AtestingCharacter::PlayEffects4);
 
+	PlayerInputComponent->BindAxis("MoveForward", this, &AtestingCharacter::MoveForward);
+	PlayerInputComponent->BindAxis("MoveRight", this, &AtestingCharacter::MoveRight);
 
+}
+
+void AtestingCharacter::MoveForward(float val)
+{
+	AddMovementInput(GetActorForwardVector()*val);
+}
+
+void AtestingCharacter::MoveRight(float val)
+{
+	AddMovementInput(GetActorRightVector()*val);
 }
 
 

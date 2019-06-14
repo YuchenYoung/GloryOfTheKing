@@ -8,7 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "testingCharacter.h"
 #include "TinyHero.h"
-#include"GameFramework/DamageType.h"
+#include "GameFramework/DamageType.h"
 
 // Sets default values
 ATowerActor::ATowerActor()
@@ -71,7 +71,7 @@ void ATowerActor::Collapse()
 	Meshcomp->SetMaterial(0, RuinMaterial);
 	bruined = true;
 	//PlayCollapseEffects();
-	//Destroy();
+	Destroy();
 }
 
 // Called every frame
