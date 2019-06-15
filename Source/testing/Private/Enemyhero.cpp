@@ -89,12 +89,53 @@ AEnemyhero::AEnemyhero()
 	Level = 1;
 	dLevel = 0.0f;
 	aLevel = 0.3f;
+	RestartTime = 0;
+	Skill1Time = 0;
+	Skill2Time = 0;
+	Skill3Time = 0;
+
 }
 
 void AEnemyhero::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+	
+	if (Skill1Time > 0)
+	{
+		if (Skill1Time < 150)
+		{
+			Skill1Time++;
+		}
+		else
+		{
+			Skill1Time = 0;
+		}
+	}
 
+
+	if (Skill2Time > 0)
+	{
+		if (Skill2Time < 10000)
+		{
+			Skill2Time++;
+		}
+		else
+		{
+			Skill2Time = 0;
+		}
+	}
+
+	if (Skill3Time > 0)
+	{
+		if (Skill3Time < 10000)
+		{
+			Skill3Time++;
+		}
+		else
+		{
+			Skill3Time = 0;
+		}
+	}
 	if (CursorToWorld != nullptr)
 	{
 		if (UHeadMountedDisplayFunctionLibrary::IsHeadMountedDisplayEnabled())
@@ -251,6 +292,11 @@ void AEnemyhero::OnNoiseHeard(APawn* NoiseInstigator, const FVector& Location, f
 	NewLookAt.Pitch = 0.0f;
 	NewLookAt.Roll = 0.0f;
 	SetActorRotation(NewLookAt);
-	PlayEffects1();
+	if (Skill1Time == 0)
+	{
+		PlayEffects1();
+		Skill1Time = 1;
+	}
+
 }
 
