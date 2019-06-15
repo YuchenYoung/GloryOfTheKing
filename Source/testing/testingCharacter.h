@@ -152,6 +152,15 @@ protected:
 public:
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
-
+	UPROPERTY(BlueprintReadWrite)
+	bool SlashingSword;
+	UPROPERTY(BlueprintReadWrite)
+	bool PlayEffect1;
+	UPROPERTY(BlueprintReadWrite)
+	bool PlayEffect2;
+	UPROPERTY(BlueprintReadWrite)
+	bool PlayEffect3;
+	UPROPERTY(BlueprintReadWrite)
+	bool PlayEffect4;
 };
 
