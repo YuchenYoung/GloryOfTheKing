@@ -18,10 +18,13 @@
 #include "Components/CapsuleComponent.h"
 #include "DrawDebugHelpers.h"
 #include "Perception/PawnSensingComponent.h"
+#include <map>
+#include"TinyHero.h"
 
 
 
 
+using namespace std;
 
 
 AEnemyhero::AEnemyhero()
@@ -93,7 +96,11 @@ AEnemyhero::AEnemyhero()
 	Skill1Time = 0;
 	Skill2Time = 0;
 	Skill3Time = 0;
-
+	int i = 0;
+	for (i = 0; i < 15; i++)
+	{
+		vLevelLib.push_back(0.20f - 0.01 * i);
+	}
 }
 
 void AEnemyhero::Tick(float DeltaSeconds)
@@ -112,10 +119,9 @@ void AEnemyhero::Tick(float DeltaSeconds)
 		}
 	}
 
-
 	if (Skill2Time > 0)
 	{
-		if (Skill2Time < 10000)
+		if (Skill2Time < 150)
 		{
 			Skill2Time++;
 		}
@@ -127,7 +133,7 @@ void AEnemyhero::Tick(float DeltaSeconds)
 
 	if (Skill3Time > 0)
 	{
-		if (Skill3Time < 10000)
+		if (Skill3Time < 150)
 		{
 			Skill3Time++;
 		}
@@ -188,6 +194,19 @@ void AEnemyhero::Tick(float DeltaSeconds)
 			}
 		}
 	}
+	if (bEffect3)
+	{
+		dEffect3 += fEffects3;
+		if (dEffect3 < 30.0f)
+		{
+			HeroHealth->Health += fEffects3;
+		}
+		else
+		{
+			dEffect3 = 0.0f;
+			bEffect3 = false;
+		}
+	}
 }
 
 void AEnemyhero::OnHealthChanged(UMyHealthComponent* HealthComp, float Health, float HealthDelta, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
@@ -214,8 +233,21 @@ void AEnemyhero::GetInjured(AActor* DamageSource, float fDamageval)
 
 void AEnemyhero::OnLevelChanged()
 {
-	Defense *= Level * 0.1 + 1;
-	aEnergy *= Level * 0.1 + 1;
+	Defense *= Level * vLevelLib[Level - 2] + 1;
+	aEnergy *= Level * vLevelLib[Level - 2] + 1;
+	fdamageByEffect2 *= Level * vLevelLib[Level - 2] + 1;
+	if (Level > 1)bCanEffect1 = true;
+	if (Level > 2)
+	{
+		bCanEffect1 = true;
+		bCanEffect2 = true;
+	}
+	if (Level > 3)
+	{
+		bCanEffect1 = true;
+		bCanEffect2 = true;
+		bCanEffect3 = true;
+	}
 }
 
 void AEnemyhero::BeginPlay()
@@ -239,17 +271,55 @@ void AEnemyhero::PlayDeathEffects()
 
 void AEnemyhero::PlayEffects1()
 {
-	UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectQ, GetActorLocation());
+	
+	if (Skill1Time == 0)
+	{
+		if (Energy < 10.0f || !bCanEffect1)return;
+		UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectQ, GetActorLocation());
+		Energy -= 10.0f;
+		Skill1Time = 1;
+	}
+
 }
 
 void AEnemyhero::PlayEffects2()
 {
-	UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectW, GetActorLocation());
+	
+	if (Skill2Time == 0)
+	{
+		if (Energy < 10.0f || !bCanEffect2)return;
+		UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectW, GetActorLocation());
+		Energy -= 10.0f;
+		Skill2Time = 1;
+		if (bIsAttackByEffects)
+		{
+			map<AActor*, int>::iterator iToAttackByEffects1;
+			for (iToAttackByEffects1 = mWillAttackByEffects.begin(); iToAttackByEffects1 != mWillAttackByEffects.end(); iToAttackByEffects1++)
+			{
+				AActor* ATemp = iToAttackByEffects1->first;
+				ATinyHero* InjuredObject = Cast<ATinyHero>(ATemp);
+				if (InjuredObject)
+				{
+					InjuredObject->GetInjured(this, this->fdamageByEffect1);
+				}
+			}
+		}
+	}
 }
 
 void AEnemyhero::PlayEffects3()
 {
-	UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectE, GetActorLocation());
+	
+	if (Skill3Time == 0)
+	{
+		if (!bCanEffect3 || Energy < 30.0f)return;
+		UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectE, GetActorLocation());
+
+		bEffect3 = true;
+
+		Energy -= 30.0f;
+		Skill3Time = 1;
+	}
 }
 
 void AEnemyhero::PlayEffects4()
@@ -282,6 +352,8 @@ void AEnemyhero::MoveRight(float val)
 }
 
 
+
+
 void AEnemyhero::OnNoiseHeard(APawn* NoiseInstigator, const FVector& Location, float Volume)
 {
 
@@ -292,11 +364,10 @@ void AEnemyhero::OnNoiseHeard(APawn* NoiseInstigator, const FVector& Location, f
 	NewLookAt.Pitch = 0.0f;
 	NewLookAt.Roll = 0.0f;
 	SetActorRotation(NewLookAt);
-	if (Skill1Time == 0)
-	{
-		PlayEffects1();
-		Skill1Time = 1;
-	}
-
+	PlayEffects2();
+	PlayEffects3();
+	PlayEffects1();
 }
+
+
 
