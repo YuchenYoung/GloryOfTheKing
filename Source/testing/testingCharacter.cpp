@@ -301,6 +301,18 @@ void AtestingCharacter::OnLevelChanged()
 	Defense *= Level * vLevelLib[Level - 2] + 1;
 	aEnergy *= Level * vLevelLib[Level - 2] + 1;
 	fdamageByEffect2 *= Level * vLevelLib[Level - 2] + 1;
+	if (Level > 1)bCanEffect1=true;
+	if (Level > 2)
+	{
+		bCanEffect1 = true;
+		bCanEffect2 = true;
+	}
+	if (Level > 3)
+	{
+		bCanEffect1 = true;
+		bCanEffect2 = true;
+		bCanEffect3 = true;
+	}
 }
 
 void AtestingCharacter::AddResult_Tiny()
@@ -383,7 +395,7 @@ void AtestingCharacter::NotifyActorEndOverlap(AActor* OtherActor)
 
 void AtestingCharacter::PlayEffects1()
 {
-	if (Role < ROLE_Authority)
+	if (Role < ROLE_Authority&&bCanEffect1)
 	{
 		ServerPlayEffects1();
 	}
@@ -397,11 +409,11 @@ void AtestingCharacter::PlayEffects1()
 
 void AtestingCharacter::PlayEffects2()
 {
-	if (Role < ROLE_Authority)
+	if (Role < ROLE_Authority&&bCanEffect2)
 	{
 		ServerPlayEffects2();
 	}
-	if (Energy < 10.0f)return;
+	if (Energy < 10.0f||!bCanEffect2)return;
 	UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectW, GetActorLocation());
 	Energy -= 10.0f;
 	if (bIsAttackByEffects)
@@ -421,10 +433,11 @@ void AtestingCharacter::PlayEffects2()
 
 void AtestingCharacter::PlayEffects3()
 {
-	if (Role < ROLE_Authority)
+	if (Role < ROLE_Authority&&bCanEffect3)
 	{
 		ServerPlayEffects3();
 	}
+	if (!bCanEffect3)return;
 	UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectE, GetActorLocation());
 	
 	bEffect3 = true;
