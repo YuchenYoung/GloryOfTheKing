@@ -137,7 +137,7 @@ void AtestingCharacter::Tick(float DeltaSeconds)
 	}
 	if (Skill1Time > 0)
 	{
-		if (Skill1Time < 200)
+		if (Skill1Time < 150)
 		{
 			Skill1Time++;
 		}
@@ -150,7 +150,7 @@ void AtestingCharacter::Tick(float DeltaSeconds)
 
 	if (Skill2Time > 0)
 	{
-		if (Skill2Time < 10000)
+		if (Skill2Time < 150)
 		{
 			Skill2Time++;
 		}
@@ -162,7 +162,7 @@ void AtestingCharacter::Tick(float DeltaSeconds)
 
 	if (Skill3Time > 0)
 	{
-		if (Skill3Time < 10000)
+		if (Skill3Time < 150)
 		{
 			Skill3Time++;
 		}
@@ -404,13 +404,12 @@ void AtestingCharacter::NotifyActorEndOverlap(AActor* OtherActor)
 
 void AtestingCharacter::PlayEffects1()
 {
-	if (Role < ROLE_Authority&&bCanEffect1)
-	{
-		ServerPlayEffects1();
-	}
+	
 	if (Skill1Time == 0)
 	{
+		if (Energy < 10.0f || !bCanEffect1)return;
 		UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectQ, GetActorLocation());
+		Energy -= 10.0f;
 		Skill1Time = 1;
 	}
 	
@@ -418,23 +417,24 @@ void AtestingCharacter::PlayEffects1()
 
 void AtestingCharacter::PlayEffects2()
 {
-	if (Role < ROLE_Authority&&bCanEffect2)
+
+	if (Skill2Time == 0)
 	{
-		ServerPlayEffects2();
-	}
-	if (Energy < 10.0f||!bCanEffect2)return;
-	UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectW, GetActorLocation());
-	Energy -= 10.0f;
-	if (bIsAttackByEffects)
-	{
-		map<AActor*, int>::iterator iToAttackByEffects1;
-		for (iToAttackByEffects1 = mWillAttackByEffects.begin(); iToAttackByEffects1 != mWillAttackByEffects.end(); iToAttackByEffects1++)
+		if (Energy < 10.0f || !bCanEffect2)return;
+		UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectW, GetActorLocation());
+		Energy -= 10.0f;
+		Skill2Time=1;
+		if (bIsAttackByEffects)
 		{
-			AActor* ATemp = iToAttackByEffects1->first;
-			ATinyHero* InjuredObject = Cast<ATinyHero>(ATemp);
-			if (InjuredObject)
+			map<AActor*, int>::iterator iToAttackByEffects1;
+			for (iToAttackByEffects1 = mWillAttackByEffects.begin(); iToAttackByEffects1 != mWillAttackByEffects.end(); iToAttackByEffects1++)
 			{
-				InjuredObject->GetInjured(this, this->fdamageByEffect1);
+				AActor* ATemp = iToAttackByEffects1->first;
+				ATinyHero* InjuredObject = Cast<ATinyHero>(ATemp);
+				if (InjuredObject)
+				{
+					InjuredObject->GetInjured(this, this->fdamageByEffect1);
+				}
 			}
 		}
 	}
@@ -442,62 +442,24 @@ void AtestingCharacter::PlayEffects2()
 
 void AtestingCharacter::PlayEffects3()
 {
-	if (Role < ROLE_Authority&&bCanEffect3)
-	{
-		ServerPlayEffects3();
-	}
-	if (!bCanEffect3)return;
-	UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectE, GetActorLocation());
 	
-	bEffect3 = true;
-
-	Energy -= 30.0f;
-}
-
-void AtestingCharacter::PlayEffects4()
-{
-	if (Role < ROLE_Authority)
+	if (Skill3Time == 0)
 	{
-		ServerPlayEffects4();
+		if (!bCanEffect3|| Energy < 30.0f)return;
+		UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectE, GetActorLocation());
+		bEffect3 = true;
+		Energy -= 30.0f;
+		Skill3Time = 1;
 	}
-	UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectR, GetActorLocation());
 }
 
-void AtestingCharacter::ServerPlayEffects1_Implementation()
-{
-	PlayEffects1();
-}
-bool AtestingCharacter::ServerPlayEffects1_Validate()
-{
-	return true;
-}
 
-void AtestingCharacter::ServerPlayEffects2_Implementation()
-{
-	PlayEffects2();
-}
-bool AtestingCharacter::ServerPlayEffects2_Validate()
-{
-	return true;
-}
 
-void AtestingCharacter::ServerPlayEffects3_Implementation()
-{
-	PlayEffects3();
-}
-bool AtestingCharacter::ServerPlayEffects3_Validate()
-{
-	return true;
-}
 
-void AtestingCharacter::ServerPlayEffects4_Implementation()
-{
-	PlayEffects4();
-}
-bool AtestingCharacter::ServerPlayEffects4_Validate()
-{
-	return true;
-}
+
+
+
+
 void AtestingCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -505,7 +467,7 @@ void AtestingCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAction("Keyboard1", IE_Pressed, this, &AtestingCharacter::PlayEffects1);
 	PlayerInputComponent->BindAction("Keyboard2", IE_Pressed, this, &AtestingCharacter::PlayEffects2);
 	PlayerInputComponent->BindAction("Keyboard3", IE_Pressed, this, &AtestingCharacter::PlayEffects3);
-	PlayerInputComponent->BindAction("Keyboard4", IE_Pressed, this, &AtestingCharacter::PlayEffects4);
+
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &AtestingCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AtestingCharacter::MoveRight);
