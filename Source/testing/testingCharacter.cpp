@@ -102,6 +102,11 @@ AtestingCharacter::AtestingCharacter()
 	Result_Hero = 0;
 	Result_Tower = 0;
 	fdamageByEffect1 =20.0f;
+	fdamageByEffect2 = 25.0f;
+	fEffects3 = 0.1f;
+	bEffect3 = false;
+	dEffect3 = 0.0f;
+	fEffects4 = 30.0f;
 }
 
 void AtestingCharacter::Tick(float DeltaSeconds)
@@ -221,6 +226,19 @@ void AtestingCharacter::Tick(float DeltaSeconds)
 	{
 		Money += dMoney;
 		dMoney = 0;
+	}
+	if (bEffect3)
+	{
+		dEffect3 += fEffects3;
+		if (dEffect3<30.0f)
+		{
+			HeroHealth->Health += fEffects3;
+		}
+		else
+		{
+			dEffect3 = 0.0f;
+			bEffect3 = false;
+		}
 	}
 }
 
@@ -400,6 +418,10 @@ void AtestingCharacter::PlayEffects3()
 		ServerPlayEffects3();
 	}
 	UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectE, GetActorLocation());
+	
+	bEffect3 = true;
+
+	Energy -= 30.0f;
 }
 
 void AtestingCharacter::PlayEffects4()

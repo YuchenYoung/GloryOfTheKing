@@ -51,6 +51,11 @@ private:
 	map<AActor*, int> mWillAttackByEffects;
 	bool bIsAttackByEffects;
 	float fdamageByEffect1;
+	float fdamageByEffect2;
+	float fEffects3;
+	bool bEffect3;
+	float dEffect3;
+	float fEffects4;
 	int32 RestartTime;
 	int32 Skill1Time;
 	int32 Skill2Time;
@@ -150,6 +155,15 @@ protected:
 public:
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
-
+	UPROPERTY(BlueprintReadWrite)
+	bool SlashingSword;
+	UPROPERTY(BlueprintReadWrite)
+	bool PlayEffect1;
+	UPROPERTY(BlueprintReadWrite)
+	bool PlayEffect2;
+	UPROPERTY(BlueprintReadWrite)
+	bool PlayEffect3;
+	UPROPERTY(BlueprintReadWrite)
+	bool PlayEffect4;
 };
 

@@ -220,7 +220,10 @@ void ATinyHero::Die()
 {
 	//PlayDeathEffect();
 	bDied = true;
-	Destroy();
+	if (Role == ROLE_Authority)
+	{
+		Destroy();
+	}
 }
 
 void ATinyHero::NotifyActorBeginOverlap(AActor* OtherActor)

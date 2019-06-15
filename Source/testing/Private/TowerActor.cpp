@@ -78,6 +78,10 @@ bool ATowerActor::GetInjured(AActor* DamageSource, float fDamageval)
 
 void ATowerActor::Collapse()
 {
+	if (Role < ROLE_Authority)
+	{
+		ServerCollapse();
+	}
 	// CollapseEffect();
 	Meshcomp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Capsulecomp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -86,6 +90,15 @@ void ATowerActor::Collapse()
 	bruined = true;
 	//PlayCollapseEffects();
 	Destroy();
+}
+
+void ATowerActor::ServerCollapse_Implementation()
+{
+	Collapse();
+}
+bool ATowerActor::ServerCollapse_Validate()
+{
+	return true;
 }
 
 // Called every frame
