@@ -5,9 +5,11 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "MyHealthComponent.h"
-
+#include <map>
+#include <vector>
 #include "Enemyhero.generated.h"
 
+using namespace std;
 
 class UPawnNoiseEmitterComponent;
 class UMyhealthComponent;
@@ -45,6 +47,17 @@ private:
 	/** A decal that projects to the cursor location. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		class UDecalComponent* CursorToWorld;
+
+	map<AActor*, int> mWillAttackByEffects;
+	vector<float>vLevelLib;
+
+	bool bIsAttackByEffects;
+	float fdamageByEffect1;
+	float fdamageByEffect2;
+	float fEffects3;
+	bool bEffect3;
+	float dEffect3;
+	float fEffects4;
 	int32 Skill1Time;
 	int32 Skill2Time;
 	int32 Skill3Time;
@@ -54,7 +67,12 @@ private:
 public:
 	UPROPERTY(BlueprintReadWrite, Category = "HeroHealth")
 		class UMyHealthComponent* HeroHealth;
-
+	UPROPERTY(BlueprintReadWrite, Category = "Effects")
+		bool bCanEffect1;
+	UPROPERTY(BlueprintReadWrite, Category = "Effects")
+		bool bCanEffect2;
+	UPROPERTY(BlueprintReadWrite, Category = "Effects")
+		bool bCanEffect3;
 
 
 
