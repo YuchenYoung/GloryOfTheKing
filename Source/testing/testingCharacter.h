@@ -51,6 +51,11 @@ private:
 	map<AActor*, int> mWillAttackByEffects;
 	bool bIsAttackByEffects;
 	float fdamageByEffect1;
+	float fdamageByEffect2;
+	float fEffects3;
+	bool bEffect3;
+	float dEffect3;
+	float fEffects4;
 	int32 RestartTime;
 
 protected:

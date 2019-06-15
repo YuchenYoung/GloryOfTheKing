@@ -77,6 +77,7 @@ AtestingCharacter::AtestingCharacter()
 	PrimaryActorTick.bStartWithTickEnabled = true;
 	NoiseEmitterComponent = CreateDefaultSubobject<UPawnNoiseEmitterComponent>(TEXT("NoiseEmitter"));
 	
+
 	bdied = false;
 	bInMySide = true;
 	RestartTime = 0;
@@ -98,10 +99,11 @@ AtestingCharacter::AtestingCharacter()
 	Result_Hero = 0;
 	Result_Tower = 0;
 	fdamageByEffect1 =20.0f;
-
-	//for network
-	SetReplicates(true);
-	SetReplicateMovement(true);
+	fdamageByEffect2 = 25.0f;
+	fEffects3 = 0.1f;
+	bEffect3 = false;
+	dEffect3 = 0.0f;
+	fEffects4 = 30.0f;
 }
 
 void AtestingCharacter::Tick(float DeltaSeconds)
@@ -186,6 +188,19 @@ void AtestingCharacter::Tick(float DeltaSeconds)
 		Money += dMoney;
 		dMoney = 0;
 	}
+	if (bEffect3)
+	{
+		dEffect3 += fEffects3;
+		if (dEffect3<30.0f)
+		{
+			HeroHealth->Health += fEffects3;
+		}
+		else
+		{
+			dEffect3 = 0.0f;
+			bEffect3 = false;
+		}
+	}
 }
 
 /*
@@ -263,11 +278,6 @@ void AtestingCharacter::Die()
 /*
 void AtestingCharacter::PlayDeathEffects()
 {
-	if (Role < ROLE_Authority)
-	{
-		ServerPlayDeathEffects();
-	}
-	
 	bDied = true;
 	GetMovementComponent()->StopMovementImmediately();
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -323,16 +333,7 @@ void AtestingCharacter::NotifyActorEndOverlap(AActor* OtherActor)
 		bIsAttackByEffects = false;
 	}
 }
-/*
-void AtestingCharacter::ServerPlayDeathEffects_Implementation()
-{
-	PlayDeathEffects();
-}
-bool AtestingCharacter::ServerPlayDeathEffects_Validate()
-{
-	return true;
-}
-*/
+
 void AtestingCharacter::PlayEffects1()
 {
 	if (Role < ROLE_Authority)
@@ -374,6 +375,10 @@ void AtestingCharacter::PlayEffects3()
 		ServerPlayEffects3();
 	}
 	UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectE, GetActorLocation());
+	
+	bEffect3 = true;
+
+	Energy -= 30.0f;
 }
 
 void AtestingCharacter::PlayEffects4()
