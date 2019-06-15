@@ -72,6 +72,13 @@ public:
 	UPROPERTY(EditInstanceOnly, Category = "Side")
 	bool bInMySide;
 
+	UPROPERTY(BlueprintReadWrite, Category = "Effects")
+		bool bCanEffect1;
+	UPROPERTY(BlueprintReadWrite, Category = "Effects")
+		bool bCanEffect2;
+	UPROPERTY(BlueprintReadWrite, Category = "Effects")
+		bool bCanEffect3;
+
 public:
 	
 	/*
