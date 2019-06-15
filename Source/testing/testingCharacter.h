@@ -5,6 +5,7 @@
 #include "GameFramework/Character.h"
 #include "MyHealthComponent.h"
 #include <map>
+#include <vector>
 #include "testingCharacter.generated.h"
 
 
@@ -49,6 +50,8 @@ private:
 	class UDecalComponent* CursorToWorld;
 
 	map<AActor*, int> mWillAttackByEffects;
+	vector<float>vLevelLib;
+	
 	bool bIsAttackByEffects;
 	float fdamageByEffect1;
 	float fdamageByEffect2;
@@ -65,7 +68,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = "Component")
 	UCapsuleComponent* SkillComp;
-
 public:
 	UPROPERTY( BlueprintReadWrite, Category = "HeroHealth")
 	class UMyHealthComponent* HeroHealth;

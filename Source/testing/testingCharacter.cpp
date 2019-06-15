@@ -107,6 +107,13 @@ AtestingCharacter::AtestingCharacter()
 	bEffect3 = false;
 	dEffect3 = 0.0f;
 	fEffects4 = 30.0f;
+
+	//set vLevelLib's default value
+	int i = 0;
+	for (i = 0; i < 15; i++) 
+	{
+		vLevelLib.push_back(0.20f-0.01*i);
+	}
 }
 
 void AtestingCharacter::Tick(float DeltaSeconds)
@@ -291,8 +298,9 @@ bool AtestingCharacter::GetInjured(AActor* DamageSource, float fDamageval)
 
 void AtestingCharacter::OnLevelChanged()
 {
-	Defense *= Level * 0.1 + 1;
-	aEnergy *= Level * 0.1 + 1;
+	Defense *= Level * vLevelLib[Level - 2] + 1;
+	aEnergy *= Level * vLevelLib[Level - 2] + 1;
+	fdamageByEffect2 *= Level * vLevelLib[Level - 2] + 1;
 }
 
 void AtestingCharacter::AddResult_Tiny()
