@@ -52,6 +52,9 @@ private:
 	bool bIsAttackByEffects;
 	float fdamageByEffect1;
 	int32 RestartTime;
+	int32 Skill1Time;
+	int32 Skill2Time;
+	int32 Skill3Time;
 
 protected:
 

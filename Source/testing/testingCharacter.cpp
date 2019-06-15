@@ -81,6 +81,9 @@ AtestingCharacter::AtestingCharacter()
 	bdied = false;
 	bInMySide = true;
 	RestartTime = 0;
+	Skill1Time = 0;
+	Skill2Time = 0;
+	Skill3Time = 0;
 
 	//set default money value
 	Money = 10000;
@@ -118,6 +121,42 @@ void AtestingCharacter::Tick(float DeltaSeconds)
 			bdied = false;
 			HeroHealth->InitialHealth();
 			SetActorHiddenInGame(false);
+		}
+	}
+	if (Skill1Time > 0)
+	{
+		if (Skill1Time < 200)
+		{
+			Skill1Time++;
+		}
+		else
+		{
+			Skill1Time = 0;
+		}
+	}
+
+
+	if (Skill2Time > 0)
+	{
+		if (Skill2Time < 10000)
+		{
+			Skill2Time++;
+		}
+		else
+		{
+			Skill2Time = 0;
+		}
+	}
+
+	if (Skill3Time > 0)
+	{
+		if (Skill3Time < 10000)
+		{
+			Skill3Time++;
+		}
+		else
+		{
+			Skill3Time = 0;
 		}
 	}
 
@@ -322,7 +361,11 @@ void AtestingCharacter::PlayEffects1()
 	{
 		ServerPlayEffects1();
 	}
-	UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectQ, GetActorLocation());
+	if (Skill1Time == 0)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectQ, GetActorLocation());
+		Skill1Time = 1;
+	}
 	
 }
 
