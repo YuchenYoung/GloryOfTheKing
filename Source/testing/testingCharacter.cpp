@@ -247,6 +247,15 @@ void AtestingCharacter::Tick(float DeltaSeconds)
 			bEffect3 = false;
 		}
 	}
+
+	/*
+	if (SlashingSword)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Health is %f"), HeroHealth->Health);
+		UE_LOG(LogTemp, Warning, TEXT("DefaultHealth is %f"), HeroHealth->DefaultHealth);
+	}
+	*/
+
 }
 
 /*
@@ -298,7 +307,7 @@ bool AtestingCharacter::GetInjured(AActor* DamageSource, float fDamageval)
 
 void AtestingCharacter::OnLevelChanged()
 {
-	Defense *= Level * vLevelLib[Level - 2] + 1;
+	//Defense /= (Level * vLevelLib[Level - 2] + 1);
 	aEnergy *= Level * vLevelLib[Level - 2] + 1;
 	fdamageByEffect2 *= Level * vLevelLib[Level - 2] + 1;
 	if (Level > 1)bCanEffect1=true;
