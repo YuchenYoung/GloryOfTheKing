@@ -44,7 +44,10 @@ ABossTower::ABossTower(const FObjectInitializer& ObjectInitializer) : Super(Obje
 	bIsAttacking = false;
 	bruined = false;
 	bInMySide = true;
+	//for multiply players
 	bReplicates = true;
+	SetReplicates(true);
+	SetReplicateMovement(true);
 }
 
 // Called when the game starts or when spawned

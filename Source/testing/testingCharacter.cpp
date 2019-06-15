@@ -77,7 +77,6 @@ AtestingCharacter::AtestingCharacter()
 	PrimaryActorTick.bStartWithTickEnabled = true;
 	NoiseEmitterComponent = CreateDefaultSubobject<UPawnNoiseEmitterComponent>(TEXT("NoiseEmitter"));
 	
-
 	bdied = false;
 	bInMySide = true;
 	RestartTime = 0;
@@ -99,6 +98,10 @@ AtestingCharacter::AtestingCharacter()
 	Result_Hero = 0;
 	Result_Tower = 0;
 	fdamageByEffect1 =20.0f;
+
+	//for network
+	SetReplicates(true);
+	SetReplicateMovement(true);
 }
 
 void AtestingCharacter::Tick(float DeltaSeconds)
@@ -320,7 +323,7 @@ void AtestingCharacter::NotifyActorEndOverlap(AActor* OtherActor)
 		bIsAttackByEffects = false;
 	}
 }
-
+/*
 void AtestingCharacter::ServerPlayDeathEffects_Implementation()
 {
 	PlayDeathEffects();
@@ -329,6 +332,7 @@ bool AtestingCharacter::ServerPlayDeathEffects_Validate()
 {
 	return true;
 }
+*/
 void AtestingCharacter::PlayEffects1()
 {
 	if (Role < ROLE_Authority)
