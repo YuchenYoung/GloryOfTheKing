@@ -12,6 +12,8 @@ using namespace std;
 
 class UCapsuleComponent;
 class UMyHealthComponent;
+class UWidgetComponent;
+class UProgressBar;
 
 UCLASS()
 class TESTING_API ATowerActor : public AActor
@@ -51,6 +53,11 @@ protected:
 	UMaterialInterface* RuinMaterial;
 	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Health")
 	UMyHealthComponent* TowerHealth;
+	UPROPERTY(EditAnywhere, Category = "Component")
+	UWidgetComponent* MyBloodBar;
+
+	UPROPERTY()
+	UProgressBar* HPBarProgress;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -61,8 +68,6 @@ protected:
 
 	void Collapse();
 	
-	UFUNCTION(Server,Reliable,WithValidation)
-	void ServerCollapse();
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

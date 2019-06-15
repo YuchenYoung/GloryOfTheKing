@@ -64,8 +64,6 @@ protected:
 	void PlayEffects();
 
 	void Collapse();
-	UFUNCTION(Server,Reliable,WithValidation)
-	void ServerCollapse();
 
 public:	
 	// Called every frame
@@ -77,6 +75,4 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	bool GetInjured(AActor* DamageSource, float fDamageval);
-	UFUNCTION(Server,Reliable,WithValidation)
-	void ServerGetInjured(AActor* DamageSource, float fDamageval);
 };
