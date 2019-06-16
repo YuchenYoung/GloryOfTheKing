@@ -26,7 +26,7 @@ using namespace std;
 
 constexpr auto TIME_GOBACK = 2500;
 constexpr auto TIME_SKILL = 1500;
-constexpr auto TIME_RESTART = 2000;
+constexpr auto TIME_RESTART = 200;
 
 AtestingCharacter::AtestingCharacter()
 {
@@ -142,6 +142,8 @@ void AtestingCharacter::Tick(float DeltaSeconds)
 			SetActorHiddenInGame(false);
 		}
 	}
+
+
 	if (Skill1Time > 0)
 	{
 		if (Skill1Time < TIME_SKILL)
@@ -366,18 +368,7 @@ void AtestingCharacter::Die()
 	RestartTime = 1;
 	bdied = true;
 	SetActorHiddenInGame(true);
-	//PlayDeathEffects();
-	//Destroy();
 }
-
-/*
-void AtestingCharacter::PlayDeathEffects()
-{
-	bDied = true;
-	GetMovementComponent()->StopMovementImmediately();
-	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-}
-*/
 
 void AtestingCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
 {

@@ -63,6 +63,8 @@ private:
 	int32 Skill3Time;
 	int32 RestartTime;
 
+	
+
 public:
 	int32 direction;
 
@@ -101,6 +103,7 @@ public:
 	float dLevel;
 	UPROPERTY(BlueprintReadWrite, Category = "Attribute")
 	float aLevel;
+
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Player")
 	bool bDied;

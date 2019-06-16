@@ -87,11 +87,6 @@ public:
 	int32 Skill3Time;
 
 public:
-	
-	/*
-	UFUNCTION()
-	void OnHealthChanged(UMyHealthComponent* HealthComp, float Health, float HealthDelta, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
-	*/
 
 	UFUNCTION(BlueprintCallable)
 	bool GetInjured(AActor* DamageSource, float fDamageval);
@@ -121,6 +116,8 @@ public:
 	float dLevel;
 	UPROPERTY(BlueprintReadWrite, Category = "Attribute")
 	float aLevel;
+
+
 	UPROPERTY(BlueprintReadWrite, Category = "Result")
 	int Result_Tiny;
 	UPROPERTY(BlueprintReadWrite, Category = "Result")

@@ -96,6 +96,11 @@ bool ATowerActor::GetInjured(AActor* DamageSource, float fDamageval)
 	if (TowerHealth->JudgeDeath())
 	{
 		Collapse();
+		AtestingCharacter* SourceHero = Cast<AtestingCharacter>(DamageSource);
+		if (SourceHero)
+		{
+			SourceHero->Result_Tower++;
+		}
 	}
 	if (HPBarProgress != NULL)
 	{

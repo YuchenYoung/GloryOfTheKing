@@ -263,6 +263,12 @@ bool AEnemyhero::GetInjured(AActor* DamageSource, float fDamageval)
 	HeroHealth->Damage(fDamageval, 1);
 	if (HeroHealth->JudgeDeath())
 	{
+		
+		AtestingCharacter* SourceHero = Cast<AtestingCharacter>(DamageSource);
+		if (SourceHero)
+		{
+			SourceHero->Result_Hero++;
+		}
 		Die();
 	}
 	return true;
