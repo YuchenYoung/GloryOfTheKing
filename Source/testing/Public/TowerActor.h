@@ -27,7 +27,7 @@ protected:
 	bool bisfiring;
 	bool bIsAttacking;
 	float fCauseDamage;
-	map<AActor*, int> mWillAttack;
+	TMap<AActor*, int32> mWillAttack;
 
 public:
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Side")

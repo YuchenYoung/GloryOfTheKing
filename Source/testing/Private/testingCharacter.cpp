@@ -125,7 +125,7 @@ AtestingCharacter::AtestingCharacter()
 
 void AtestingCharacter::Tick(float DeltaSeconds)
 {
-    Super::Tick(DeltaSeconds);
+	Super::Tick(DeltaSeconds);
 
 	if (RestartTime > 0)
 	{
@@ -219,7 +219,7 @@ void AtestingCharacter::Tick(float DeltaSeconds)
 			CursorToWorld->SetWorldRotation(CursorR);
 		}
 	}
-	
+
 	if (Energy < 100.0f)
 	{
 		Energy += aEnergy;
@@ -236,7 +236,7 @@ void AtestingCharacter::Tick(float DeltaSeconds)
 			dLevel -= 100.0f;
 			aLevel *= 0.8f;
 			Level++;
-			if (Level > 15) 
+			if (Level > 15)
 			{
 				Level = 15;
 			}
@@ -250,7 +250,7 @@ void AtestingCharacter::Tick(float DeltaSeconds)
 	{
 		dMoney += aMoney;
 	}
-	if (dMoney == 100) 
+	if (dMoney == 100)
 	{
 		Money += dMoney;
 		dMoney = 0;
@@ -258,7 +258,7 @@ void AtestingCharacter::Tick(float DeltaSeconds)
 	if (bEffect3)
 	{
 		dEffect3 += fEffects3;
-		if (dEffect3<30.0f)
+		if (dEffect3 < 30.0f)
 		{
 			HeroHealth->Health += fEffects3;
 		}
@@ -268,6 +268,7 @@ void AtestingCharacter::Tick(float DeltaSeconds)
 			bEffect3 = false;
 		}
 	}
+}
 
 
 bool AtestingCharacter::GetInjured(AActor* DamageSource, float fDamageval)
