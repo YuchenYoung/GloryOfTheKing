@@ -90,7 +90,6 @@ void ATinyHero::Tick(float DeltaTime)
 	if (bIsAttacking)
 	{
 		PlayEffects();
-		map<AActor*, int>::iterator iToAttack;
 		for (TMap<AActor*, int32>::TIterator iToAttack = mWillAttack.CreateIterator(); iToAttack; ++iToAttack)
 		{
 			AActor* ATemp = iToAttack->Key;
