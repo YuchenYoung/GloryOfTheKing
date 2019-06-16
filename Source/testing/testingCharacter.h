@@ -60,9 +60,6 @@ private:
 	float dEffect3;
 	float fEffects4;
 	int32 RestartTime;
-	int32 Skill1Time;
-	int32 Skill2Time;
-	int32 Skill3Time;
 	int32 BackTime;
 
 protected:
@@ -82,6 +79,12 @@ public:
 	bool bCanEffect2;
 	UPROPERTY(BlueprintReadWrite, Category = "Effects")
 	bool bCanEffect3;
+	UPROPERTY(BlueprintReadWrite, Category = "Time")
+	int32 Skill1Time;
+	UPROPERTY(BlueprintReadWrite, Category = "Time")
+	int32 Skill2Time;
+	UPROPERTY(BlueprintReadWrite, Category = "Time")
+	int32 Skill3Time;
 
 public:
 	
