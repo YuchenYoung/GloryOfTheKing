@@ -20,12 +20,13 @@
 #include "TinyHero.h"
 #include "TowerActor.h"
 #include "BossTower.h"
+#include "Enemyhero.h"
 
 using namespace std;
 
-constexpr auto TIME_GOBACK = 500;
-constexpr auto TIME_SKILL = 150;
-constexpr auto TIME_RESTART = 300;
+constexpr auto TIME_GOBACK = 2500;
+constexpr auto TIME_SKILL = 1500;
+constexpr auto TIME_RESTART = 2000;
 
 AtestingCharacter::AtestingCharacter()
 {
@@ -375,8 +376,8 @@ void AtestingCharacter::PlayDeathEffects()
 void AtestingCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
-	float Distance = (this->GetActorLocation() - OtherActor->GetActorLocation()).Size();
-	if (Distance > fDamageRadius) return;
+	//float Distance = (this->GetActorLocation() - OtherActor->GetActorLocation()).Size();
+	//if (Distance > fDamageRadius) return;
 	if (mWillAttackByEffects.find(OtherActor) == mWillAttackByEffects.end())
 	{
 		AtestingCharacter* OtherHero = Cast<AtestingCharacter>(OtherActor);
@@ -441,7 +442,7 @@ void AtestingCharacter::PlayEffects2()
 
 	if (Skill2Time == 0)
 	{
-		if (Energy < 10.0f || !bCanEffect2)return;
+		if (Energy < 10.0f || !bCanEffect2) return;
 		UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectW, GetActorLocation());
 		Energy -= 10.0f;
 		if (bIsAttackByEffects)
@@ -454,6 +455,14 @@ void AtestingCharacter::PlayEffects2()
 				if (InjuredObject)
 				{
 					InjuredObject->GetInjured(this, this->fdamageByEffect2);
+				}
+				else
+				{
+					AEnemyhero* InjuredAI = Cast<AEnemyhero>(ATemp);
+					if (InjuredAI)
+					{
+						InjuredAI->GetInjured(this, this->fdamageByEffect2);
+					}
 				}
 			}
 		}
@@ -477,7 +486,6 @@ void AtestingCharacter::BackToBase()
 	if (BackTime == 0)
 	{
 		BackTime = 1;
-		Energy -= 50.0f;
 		SetActorLocation(FVector(-1775, -1470, 243));
 	}
 }

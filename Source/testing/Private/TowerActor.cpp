@@ -9,6 +9,7 @@
 #include "testingCharacter.h"
 #include "TinyHero.h"
 #include "BossTower.h"
+#include "Enemyhero.h"
 #include "GameFramework/DamageType.h"
 #include "Components/WidgetComponent.h"
 #include "Components/ProgressBar.h"
@@ -86,7 +87,11 @@ bool ATowerActor::GetInjured(AActor* DamageSource, float fDamageval)
 	{
 		return false;
 	}
-
+	AEnemyhero* OtherAI = Cast<AEnemyhero>(DamageSource);
+	if (OtherAI && OtherAI->bInMySide == this->bInMySide)
+	{
+		return false;
+	}
 	TowerHealth->Damage(fDamageval,1);
 	if (TowerHealth->JudgeDeath())
 	{
@@ -146,6 +151,14 @@ void ATowerActor::Tick(float DeltaTime)
 				if (InjuredTiny)
 				{
 					InjuredTiny->GetInjured(this, this->fCauseDamage);
+				}
+				else
+				{
+					AEnemyhero* InjuredAI = Cast<AEnemyhero>(ATemp);
+					if (InjuredAI)
+					{
+						InjuredAI->GetInjured(this, this->fCauseDamage);
+					}
 				}
 			}
 		}
