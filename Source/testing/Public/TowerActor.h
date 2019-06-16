@@ -55,9 +55,10 @@ protected:
 	UMyHealthComponent* TowerHealth;
 	UPROPERTY(EditAnywhere, Category = "Component")
 	UWidgetComponent* MyBloodBar;
-
 	UPROPERTY()
 	UProgressBar* HPBarProgress;
+	UPROPERTY(EditDefaultsOnly, Category = "Params")
+	float fDamageRadius;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

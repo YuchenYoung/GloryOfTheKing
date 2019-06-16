@@ -41,7 +41,10 @@ AtestingCharacter::AtestingCharacter()
 	SkillComp->SetupAttachment(RootComponent);
 
 	// Configure character movement
-	// Rotate character to moving direction
+	GetCharacterMovement()->bOrientRotationToMovement = true; // Rotate character to moving direction
+	GetCharacterMovement()->RotationRate = FRotator(0.f, 640.f, 0.f);
+	GetCharacterMovement()->bConstrainToPlane = true;
+	GetCharacterMovement()->bSnapToPlaneAtStart = true;
 
 
 	// Create a camera boom...
@@ -357,6 +360,8 @@ void AtestingCharacter::PlayDeathEffects()
 void AtestingCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
+	float Distance = (this->GetActorLocation() - OtherActor->GetActorLocation()).Size();
+	if (Distance > fDamageRadius) return;
 	if (mWillAttackByEffects.find(OtherActor) == mWillAttackByEffects.end())
 	{
 		AtestingCharacter* OtherHero = Cast<AtestingCharacter>(OtherActor);
@@ -471,20 +476,8 @@ void AtestingCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAction("Keyboard3", IE_Pressed, this, &AtestingCharacter::PlayEffects3);
 
 
-	PlayerInputComponent->BindAxis("MoveForward", this, &AtestingCharacter::MoveForward);
-	PlayerInputComponent->BindAxis("MoveRight", this, &AtestingCharacter::MoveRight);
-
 }
 
-void AtestingCharacter::MoveForward(float val)
-{
-	AddMovementInput(GetActorForwardVector() * val);
-}
-
-void AtestingCharacter::MoveRight(float val)
-{
-	AddMovementInput(GetActorRightVector() * val);
-}
 
 
 

@@ -229,6 +229,10 @@ void ATinyHero::Die()
 void ATinyHero::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
+
+	float Distance = (this->GetActorLocation() - OtherActor->GetActorLocation()).Size();
+	if (Distance > fDamageRadius) return;
+
 	if (mWillAttack.find(OtherActor) == mWillAttack.end())
 	{
 		AtestingCharacter* OtherHero = Cast<AtestingCharacter>(OtherActor);

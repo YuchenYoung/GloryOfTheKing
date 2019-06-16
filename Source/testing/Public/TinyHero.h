@@ -56,6 +56,9 @@ protected:
 
 	float fCauseDamage;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Params")
+	float fDamageRadius;
+
 	map<AActor*, int> mWillAttack;
 
 public:

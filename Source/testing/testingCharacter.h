@@ -51,7 +51,8 @@ private:
 
 	map<AActor*, int> mWillAttackByEffects;
 	vector<float>vLevelLib;
-	
+	UPROPERTY(EditDefaultsOnly, Category = "Params")
+	float fDamageRadius;
 	bool bIsAttackByEffects;
 	float fdamageByEffect1;
 	float fdamageByEffect2;
@@ -146,11 +147,6 @@ protected:
 	void PlayEffects1();
 	void PlayEffects2();
 	void PlayEffects3();
-	
-
-
-	void MoveForward(float val);
-	void MoveRight(float val);
 
 public:
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;

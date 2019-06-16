@@ -24,8 +24,14 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Var")
 	bool bruined;
+
 	bool bIsAttacking;
+
 	float fCauseDamage;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Params")
+	float fDamageRadius;
+
 	map<AActor*, int> mWillAttack;
 
 public:
