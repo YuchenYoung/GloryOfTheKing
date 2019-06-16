@@ -51,6 +51,7 @@ protected:
 	UParticleSystem* AttackEffects;
 
 	//FVector NextPathPoint;
+	
 
 	bool bIsAttacking;
 
@@ -64,7 +65,9 @@ protected:
 public:
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Side")
 	bool bInMySide;
-
+	UFUNCTION(BlueprintCallable, Category = "Side")
+	void SetDefaultSide(bool bSide);
+	
 protected:
 
 	//void MoveToNextPatrolPoint();
