@@ -135,7 +135,7 @@ void AtestingCharacter::Tick(float DeltaSeconds)
 		}
 		else
 		{
-			SetActorLocation(FVector(-1775, -1470, 243));
+			SetActorLocation(FVector(-2210, -1490, 263));
 			RestartTime = 0;
 			bdied = false;
 			HeroHealth->InitialHealth();
@@ -329,17 +329,23 @@ void AtestingCharacter::OnLevelChanged()
 	//Defense /= (Level * vLevelLib[Level - 2] + 1);
 	aEnergy *= Level * vLevelLib[Level - 2] + 1;
 	fdamageByEffect2 *= Level * vLevelLib[Level - 2] + 1;
-	if (Level > 1)bCanEffect1=true;
-	if (Level > 2)
+	if (Level > 1) bCanEffect1 = true;
+	if (Level > 2 && Energy - 10 >= 0.0f)
 	{
 		bCanEffect1 = true;
 		bCanEffect2 = true;
 	}
 	if (Level > 3)
 	{
-		bCanEffect1 = true;
-		bCanEffect2 = true;
-		bCanEffect3 = true;
+		if (Energy - 10 >= 0.0f)
+		{
+			bCanEffect1 = true;
+			bCanEffect2 = true;
+		}
+		if (Energy - 30 >= 0.0f)
+		{
+			bCanEffect3 = true;
+		}
 	}
 }
 
@@ -486,7 +492,7 @@ void AtestingCharacter::BackToBase()
 	if (BackTime == 0)
 	{
 		BackTime = 1;
-		SetActorLocation(FVector(-1775, -1470, 243));
+		SetActorLocation(FVector(-2210, -1490, 263));
 	}
 }
 

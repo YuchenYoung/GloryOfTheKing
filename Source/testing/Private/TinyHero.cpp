@@ -36,7 +36,7 @@ ATinyHero::ATinyHero()
 
 	
 
-	fCauseDamage = 0.002f;
+	fCauseDamage = 0.05f;
 	bIsAttacking = false;
 	bMoveToTower = true;
 

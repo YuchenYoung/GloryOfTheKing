@@ -120,7 +120,7 @@ void AEnemyhero::Tick(float DeltaSeconds)
 		}
 		else
 		{
-			SetActorLocation(FVector(1800, 1800, 243));
+			SetActorLocation(FVector(1485, 1555, 260));
 			RestartTime = 0;
 			HeroHealth->InitialHealth();
 			SetActorHiddenInGame(false);
@@ -412,7 +412,7 @@ void AEnemyhero::MoveRight(float val)
 
 void AEnemyhero::OnNoiseHeard(APawn* NoiseInstigator, const FVector& Location, float Volume)
 {
-
+	if (RestartTime > 0) return;
 	//DrawDebugSphere(GetWorld(), Location, 32.0f, 12, FColor::Green, false, 10.0f);
 	FVector Direction = Location - GetActorLocation();
 	Direction.Normalize();

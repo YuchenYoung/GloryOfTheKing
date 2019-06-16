@@ -40,7 +40,7 @@ ATowerActor::ATowerActor()
 	MyBloodBar->SetIsReplicated(true);
 
 	TowerHealth->Health = 200.0f;
-	fCauseDamage = 0.005f;
+	fCauseDamage = 0.05f;
 	bIsAttacking = false;
 	bruined = false;
 	bisfiring = false;
