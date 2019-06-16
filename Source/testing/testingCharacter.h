@@ -73,7 +73,7 @@ public:
 	UPROPERTY( BlueprintReadWrite, Category = "HeroHealth")
 	class UMyHealthComponent* HeroHealth;
 
-	UPROPERTY(EditInstanceOnly, Category = "Side")
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Side")
 	bool bInMySide;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Effects")
