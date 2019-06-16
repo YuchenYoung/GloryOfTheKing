@@ -18,14 +18,12 @@
 #include "Components/CapsuleComponent.h"
 #include "DrawDebugHelpers.h"
 #include "Perception/PawnSensingComponent.h"
-#include <map>
 #include "TinyHero.h"
 #include "testingCharacter.h"
 #include "TinyHero.h"
 #include "TowerActor.h"
 #include "BossTower.h"
 
-using namespace std;
 
 constexpr auto TIME_GOBACK = 2500;
 constexpr auto TIME_SKILL = 1500;
@@ -104,7 +102,7 @@ AEnemyhero::AEnemyhero()
 	Skill3Time = 0;
 	for (int i = 0; i < 15; i++)
 	{
-		vLevelLib.push_back(0.20f - 0.01 * i);
+		vLevelLib.Add(0.20f - 0.01 * i);
 	}
 }
 
@@ -308,10 +306,9 @@ void AEnemyhero::PlayEffects2()
 		Skill2Time = 1;
 		if (bIsAttackByEffects)
 		{
-			map<AActor*, int>::iterator iToAttack;
-			for (iToAttack = mWillAttack.begin(); iToAttack != mWillAttack.end(); iToAttack++)
+			for (TMap<AActor*, int32>::TIterator iToAttack = mWillAttack.CreateIterator(); iToAttack; ++iToAttack)
 			{
-				AActor* ATemp = iToAttack->first;
+				AActor* ATemp = iToAttack->Key;
 				AtestingCharacter* InjuredHero = Cast<AtestingCharacter>(ATemp);
 				if (InjuredHero)
 				{

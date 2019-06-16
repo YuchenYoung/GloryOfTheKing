@@ -2,7 +2,6 @@
 
 
 #include "TinyHero.h"
-#include <map>
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "MyGameModeBase.h"
@@ -19,7 +18,6 @@
 #include "Enemyhero.h"
 
 
-using namespace std;
 
 // Sets default values
 ATinyHero::ATinyHero()
@@ -93,9 +91,9 @@ void ATinyHero::Tick(float DeltaTime)
 	{
 		PlayEffects();
 		map<AActor*, int>::iterator iToAttack;
-		for (iToAttack = mWillAttack.begin(); iToAttack != mWillAttack.end(); iToAttack++)
+		for (TMap<AActor*, int32>::TIterator iToAttack = mWillAttack.CreateIterator(); iToAttack; ++iToAttack)
 		{
-			AActor* ATemp = iToAttack->first;
+			AActor* ATemp = iToAttack->Key;
 			AtestingCharacter* InjuredHero = Cast<AtestingCharacter>(ATemp);
 			if (InjuredHero)
 			{
@@ -184,50 +182,45 @@ void ATinyHero::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
 
-	if (mWillAttack.find(OtherActor) == mWillAttack.end())
-	{
+	
 		AtestingCharacter* OtherHero = Cast<AtestingCharacter>(OtherActor);
 		if (OtherHero && OtherHero->bInMySide != this->bInMySide)
 		{
 			float Distance = (this->GetActorLocation() - OtherActor->GetActorLocation()).Size();
 			if (Distance > fDamageRadius) return;
-			mWillAttack.insert(pair<AActor*, int>(OtherActor, 1));
+			mWillAttack.Add(OtherActor, 1);
 			bIsAttacking = true;
 			return;
 		}
 		ATinyHero* OtherTiny = Cast<ATinyHero>(OtherActor);
 		if (OtherTiny && OtherTiny->bInMySide != this->bInMySide)
 		{
-			mWillAttack.insert(pair<AActor*, int>(OtherActor, 1));
+			mWillAttack.Add(OtherActor, 1);
 			bIsAttacking = true;
 			return;
 		}
 		ATowerActor* OtherTower = Cast<ATowerActor>(OtherActor);
 		if (OtherTower && OtherTower->bInMySide != this->bInMySide)
 		{
-			mWillAttack.insert(pair<AActor*, int>(OtherActor, 1));
+			mWillAttack.Add(OtherActor, 1);
 			bIsAttacking = true;
 			return;
 		}
 		ABossTower* OtherBoss = Cast<ABossTower>(OtherActor);
 		if (OtherBoss && OtherBoss->bInMySide != this->bInMySide)
 		{
-			mWillAttack.insert(pair<AActor*, int>(OtherActor, 1));
+			mWillAttack.Add(OtherActor, 1);
 			bIsAttacking = true;
 			return;
 		}
-	}
 }
 
 void ATinyHero::NotifyActorEndOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorEndOverlap(OtherActor);
-	if (mWillAttack.find(OtherActor) == mWillAttack.end())
-	{
-		return;
-	}
-	mWillAttack.erase(OtherActor);
-	if (mWillAttack.empty())
+	mWillAttack.Add(OtherActor, 1);
+	mWillAttack.Remove(OtherActor);
+	if (mWillAttack.Num() == 0)
 	{
 		bIsAttacking = false;
 	}

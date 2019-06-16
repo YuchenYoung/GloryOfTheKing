@@ -2,13 +2,11 @@
 
 #pragma once
 
-#include <map>
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "BossTower.generated.h"
 
 using namespace UP;
-using namespace std;
 
 class UCapsuleComponent;
 class UMyHealthComponent;
@@ -32,7 +30,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Params")
 	float fDamageRadius;
 
-	map<AActor*, int> mWillAttack;
+	TMap<AActor*, int32> mWillAttack;
 
 public:
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Side")

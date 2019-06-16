@@ -47,8 +47,8 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UDecalComponent* CursorToWorld;
 
-	map<AActor*, int> mWillAttack;
-	vector<float>vLevelLib;
+	TMap<AActor*, int32> mWillAttack;
+	TArray<float> vLevelLib;
 
 	bool bIsAttackByEffects;
 	float fCauseDamage;

@@ -2,7 +2,6 @@
 
 
 #include "BossTower.h"
-#include <map>
 #include "Components/StaticMeshComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -98,10 +97,9 @@ void ABossTower::Tick(float DeltaTime)
 	if (bIsAttacking)
 	{
 		PlayEffects();
-		map<AActor*, int>::iterator iToAttack;
-		for (iToAttack = mWillAttack.begin(); iToAttack != mWillAttack.end(); iToAttack++)
+		for (TMap<AActor*, int32>::TIterator iToAttack = mWillAttack.CreateIterator(); iToAttack; ++iToAttack)
 		{
-			AActor* ATemp = iToAttack->first;
+			AActor* ATemp = iToAttack->Key;
 			AtestingCharacter* InjuredHero = Cast<AtestingCharacter>(ATemp);
 			if (InjuredHero)
 			{
@@ -133,34 +131,29 @@ void ABossTower::NotifyActorBeginOverlap(AActor* OtherActor)
 	Super::NotifyActorBeginOverlap(OtherActor);
 	float Distance = (this->GetActorLocation() - OtherActor->GetActorLocation()).Size();
 	if (Distance > fDamageRadius) return;
-	if (mWillAttack.find(OtherActor) == mWillAttack.end())
+	AtestingCharacter* OtherHero = Cast<AtestingCharacter>(OtherActor);
+	if (OtherHero && OtherHero->bInMySide != this->bInMySide)
 	{
-		AtestingCharacter* OtherHero = Cast<AtestingCharacter>(OtherActor);
-		if (OtherHero && OtherHero->bInMySide != this->bInMySide)
-		{
-			mWillAttack.insert(pair<AActor*, int>(OtherActor, 1));
-			bIsAttacking = true;
-			return;
-		}
-		ATinyHero* OtherTiny = Cast<ATinyHero>(OtherActor);
-		if (OtherTiny && OtherTiny->bInMySide != this->bInMySide)
-		{
-			mWillAttack.insert(pair<AActor*, int>(OtherActor, 1));
-			bIsAttacking = true;
-			return;
-		}
+		mWillAttack.Add(OtherActor, 1);
+		bIsAttacking = true;
+		return;
 	}
+	ATinyHero* OtherTiny = Cast<ATinyHero>(OtherActor);
+	if (OtherTiny && OtherTiny->bInMySide != this->bInMySide)
+	{
+		mWillAttack.Add(OtherActor, 1);
+		bIsAttacking = true;
+		return;
+	}
+
 }
 
 void ABossTower::NotifyActorEndOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorEndOverlap(OtherActor);
-	if (mWillAttack.find(OtherActor) == mWillAttack.end())
-	{
-		return;
-	}
-	mWillAttack.erase(OtherActor);
-	if (mWillAttack.empty())
+	mWillAttack.Add(OtherActor, 1);
+	mWillAttack.Remove(OtherActor);
+	if (mWillAttack.Num() == 0)
 	{
 		bIsAttacking = false;
 	}

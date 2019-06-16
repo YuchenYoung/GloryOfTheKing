@@ -4,12 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include <map>
 #include "TinyHero.generated.h"
 
 using namespace UP;
 using namespace UI;
-using namespace std;
 
 class UPawnSensingComponent;
 class UCapsuleComponent;
@@ -61,7 +59,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Params")
 	float fDamageRadius;
 
-	map<AActor*, int> mWillAttack;
+	TMap<AActor*, int32> mWillAttack;
 
 public:
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Side")
