@@ -18,6 +18,7 @@
 #include "BossTower.h"
 #include "Net/UnrealNetwork.h"
 
+
 using namespace std;
 
 // Sets default values
@@ -31,10 +32,11 @@ ATinyHero::ATinyHero()
 	PawnSensingComp = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensingComp"));
 	PawnSensingComp->OnSeePawn.AddDynamic(this, &ATinyHero::OnPawnSeen);
 	PawnSensingComp->OnHearNoise.AddDynamic(this, &ATinyHero::OnNoiseHeard);
-
 	TinyHealth = CreateDefaultSubobject<UMyHealthComponent>(TEXT("TinyHealth"));
 
-	fCauseDamage = 0.005f;
+	
+
+	fCauseDamage = 0.002f;
 	bIsAttacking = false;
 	bMoveToTower = true;
 
@@ -45,14 +47,6 @@ void ATinyHero::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//NextPathPoint = GetNextPathPoint();
-
-	/*
-	if (bPatrol)
-	{
-		MoveToNextPatrolPoint();
-	}
-	*/
 }
 
 void ATinyHero::SetDefaultSide(bool bSide)

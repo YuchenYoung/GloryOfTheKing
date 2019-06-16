@@ -15,6 +15,7 @@ class UPawnSensingComponent;
 class UCapsuleComponent;
 class UMyHealthComponent;
 
+
 UCLASS()
 class TESTING_API ATinyHero : public ACharacter
 {
@@ -50,8 +51,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Effects")
 	UParticleSystem* AttackEffects;
 
+
 	//FVector NextPathPoint;
-	
 
 	bool bIsAttacking;
 
@@ -67,7 +68,7 @@ public:
 	bool bInMySide;
 	UFUNCTION(BlueprintCallable, Category = "Side")
 	void SetDefaultSide(bool bSide);
-	
+
 protected:
 
 	//void MoveToNextPatrolPoint();

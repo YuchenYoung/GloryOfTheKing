@@ -38,7 +38,8 @@ ATowerActor::ATowerActor()
 	MyBloodBar->SetWidgetClass(Widget);
 	MyBloodBar->SetIsReplicated(true);
 
-	fCauseDamage = 0.005;
+	TowerHealth->Health = 200.0f;
+	fCauseDamage = 0.005f;
 	bIsAttacking = false;
 	bruined = false;
 	bisfiring = false;
