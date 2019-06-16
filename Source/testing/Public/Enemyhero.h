@@ -10,12 +10,11 @@
 #include "Enemyhero.generated.h"
 
 using namespace std;
+using namespace UM;
 
 class UPawnNoiseEmitterComponent;
 class UMyhealthComponent;
-using namespace UM;
 class UPawnSensingComponent;
-
 
 UCLASS(config = Game)
 class AEnemyhero : public ACharacter
@@ -38,15 +37,15 @@ public:
 private:
 	/** Top down camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-		class UCameraComponent* TopDownCameraComponent;
+	class UCameraComponent* TopDownCameraComponent;
 
 	/** Camera boom positioning the camera above the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-		class USpringArmComponent* CameraBoom;
+	class USpringArmComponent* CameraBoom;
 
 	/** A decal that projects to the cursor location. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-		class UDecalComponent* CursorToWorld;
+	class UDecalComponent* CursorToWorld;
 
 	map<AActor*, int> mWillAttackByEffects;
 	vector<float>vLevelLib;
@@ -63,70 +62,68 @@ private:
 	int32 Skill3Time;
 	int32 RestartTime;
 
+public:
+	int32 direction;
 
 public:
 	UPROPERTY(BlueprintReadWrite, Category = "HeroHealth")
-		class UMyHealthComponent* HeroHealth;
+	class UMyHealthComponent* HeroHealth;
 	UPROPERTY(BlueprintReadWrite, Category = "Effects")
-		bool bCanEffect1;
+	bool bCanEffect1;
 	UPROPERTY(BlueprintReadWrite, Category = "Effects")
-		bool bCanEffect2;
+	bool bCanEffect2;
 	UPROPERTY(BlueprintReadWrite, Category = "Effects")
-		bool bCanEffect3;
-
-
-
+	bool bCanEffect3;
+	UPROPERTY(BlueprintReadWrite, Category = "Side")
+	bool bInMyside;
 
 public:
 
 	UFUNCTION()
-		void OnHealthChanged(UMyHealthComponent* HealthComp, float Health, float HealthDelta, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
+	void OnHealthChanged(UMyHealthComponent* HealthComp, float Health, float HealthDelta, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
 	UFUNCTION(BlueprintCallable)
-		void GetInjured(AActor* DamageSource, float fDamageval);
+	void GetInjured(AActor* DamageSource, float fDamageval);
 
 	UFUNCTION()
-		void OnLevelChanged();
+	void OnLevelChanged();
 	UPROPERTY(BlueprintReadWrite, Category = "Money")
-		int Money;
+	int Money;
 	UPROPERTY(BlueprintReadWrite, Category = "Attribute")
-		float AttackValue;
+	float AttackValue;
 	UPROPERTY(BlueprintReadWrite, Category = "Attribute")
-		float Defense;
+	float Defense;
 	UPROPERTY(BlueprintReadWrite, Category = "Attribute")
-		float Energy;
+	float Energy;
 	UPROPERTY(BlueprintReadWrite, Category = "Attribute")
-		float aEnergy;
+	float aEnergy;
 	UPROPERTY(BlueprintReadWrite, Category = "Attribute")
-		int Level;
+	int Level;
 	float dLevel;
 	UPROPERTY(BlueprintReadWrite, Category = "Attribute")
-		float aLevel;
+	float aLevel;
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Player")
-		bool bDied;
+	bool bDied;
 	void Die();
 	void PlayDeathEffects();
 	void BeginPlay();
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
-		UPawnNoiseEmitterComponent * NoiseEmitterComponent;
+	UPawnNoiseEmitterComponent * NoiseEmitterComponent;
 	UPROPERTY(VisibleAnywhere, Category = "Component")
-		UCapsuleComponent* AttackCapsulecomp;
+	UCapsuleComponent* AttackCapsulecomp;
 	UFUNCTION()
-		void OnNoiseHeard(APawn* NoiseInstigator, const FVector& Location, float Volume);
+	void OnNoiseHeard(APawn* NoiseInstigator, const FVector& Location, float Volume);
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
-		UParticleSystem* SkillEffectQ;
+	UParticleSystem* SkillEffectQ;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
-		UParticleSystem* SkillEffectW;
+	UParticleSystem* SkillEffectW;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
-		UParticleSystem* SkillEffectE;
+	UParticleSystem* SkillEffectE;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
-		UParticleSystem* SkillEffectR;
+	UParticleSystem* SkillEffectR;
 	UPROPERTY(VisibleAnywhere, Category = "Components")
-		UPawnSensingComponent* PawnSensingComp;
-
-
-
+	UPawnSensingComponent* PawnSensingComp;
 
 	void PlayEffects1();
 	void PlayEffects2();
@@ -138,7 +135,7 @@ public:
 
 	void MoveForward(float val);
 	void MoveRight(float val);
-	int direction;
+
 	/* forward 1  backward 2  left 3  right 4  */
 };
 
