@@ -1,7 +1,7 @@
 // Copyright 1998-2019 Epic Games, Inc. All Rights Reserved.
 
 #include "testingCharacter.h"
-#include <map>
+#include "map.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
 #include "Components/DecalComponent.h"
@@ -119,7 +119,7 @@ AtestingCharacter::AtestingCharacter()
 	//set vLevelLib's default value
 	for (int i = 0; i < 15; i++) 
 	{
-		vLevelLib.push_back(0.20f - 0.01 * i);
+		vLevelLib.Add(0.20f - 0.01 * i);
 	}
 }
 
@@ -353,48 +353,44 @@ void AtestingCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
 	Super::NotifyActorBeginOverlap(OtherActor);
 	//float Distance = (this->GetActorLocation() - OtherActor->GetActorLocation()).Size();
 	//if (Distance > fDamageRadius) return;
-	if (mWillAttackByEffects.find(OtherActor) == mWillAttackByEffects.end())
+
+	AtestingCharacter* OtherHero = Cast<AtestingCharacter>(OtherActor);
+	if (OtherHero && OtherHero->bInMySide != this->bInMySide)
 	{
-		AtestingCharacter* OtherHero = Cast<AtestingCharacter>(OtherActor);
-		if (OtherHero && OtherHero->bInMySide != this->bInMySide)
-		{
-			mWillAttackByEffects.insert(pair<AActor*, int>(OtherActor, 1));
-			bIsAttackByEffects = true;
-			return;
-		}
-		ATinyHero* OtherTiny = Cast<ATinyHero>(OtherActor);
-		if (OtherTiny && OtherTiny->bInMySide != this->bInMySide)
-		{
-			mWillAttackByEffects.insert(pair<AActor*, int>(OtherActor, 1));
-			bIsAttackByEffects = true;
-			return;
-		}
-		ATowerActor* OtherTower = Cast<ATowerActor>(OtherActor);
-		if (OtherTower && OtherTower->bInMySide != this->bInMySide)
-		{
-			mWillAttackByEffects.insert(pair<AActor*, int>(OtherActor, 1));
-			bIsAttackByEffects = true;
-			return;
-		}
-		ABossTower* OtherBoss = Cast<ABossTower>(OtherActor);
-		if (OtherBoss && OtherBoss->bInMySide != this->bInMySide)
-		{
-			mWillAttackByEffects.insert(pair<AActor*, int>(OtherActor, 1));
-			bIsAttackByEffects = true;
-			return;
-		}
+		mWillAttackByEffects.Add(OtherActor, 1);
+		bIsAttackByEffects = true;
+		return;
 	}
+	ATinyHero* OtherTiny = Cast<ATinyHero>(OtherActor);
+	if (OtherTiny && OtherTiny->bInMySide != this->bInMySide)
+	{
+		mWillAttackByEffects.Add(OtherActor, 1);
+		bIsAttackByEffects = true;
+		return;
+	}
+	ATowerActor* OtherTower = Cast<ATowerActor>(OtherActor);
+	if (OtherTower && OtherTower->bInMySide != this->bInMySide)
+	{
+		mWillAttackByEffects.Add(OtherActor, 1);
+		bIsAttackByEffects = true;
+		return;
+	}
+	ABossTower* OtherBoss = Cast<ABossTower>(OtherActor);
+	if (OtherBoss && OtherBoss->bInMySide != this->bInMySide)
+	{
+		mWillAttackByEffects.Add(OtherActor, 1);
+		bIsAttackByEffects = true;
+		return;
+	}
+
 }
 
 void AtestingCharacter::NotifyActorEndOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorEndOverlap(OtherActor);
-	if (mWillAttackByEffects.find(OtherActor) == mWillAttackByEffects.end())
-	{
-		return;
-	}
-	mWillAttackByEffects.erase(OtherActor);
-	if (mWillAttackByEffects.empty())
+	mWillAttackByEffects.Add(OtherActor, 1);
+	mWillAttackByEffects.Remove(OtherActor);
+	if (mWillAttackByEffects.Num() == 0)
 	{
 		bIsAttackByEffects = false;
 	}
@@ -422,10 +418,9 @@ void AtestingCharacter::PlayEffects2()
 		Energy -= 10.0f;
 		if (bIsAttackByEffects)
 		{
-			map<AActor*, int>::iterator iToAttackByEffects1;
-			for (iToAttackByEffects1 = mWillAttackByEffects.begin(); iToAttackByEffects1 != mWillAttackByEffects.end(); iToAttackByEffects1++)
+			for (TMap<AActor*, int32>::TIterator iToAttack = mWillAttackByEffects.CreateIterator(); iToAttack; ++iToAttack)
 			{
-				AActor* ATemp = iToAttackByEffects1->first;
+				AActor* ATemp = iToAttack->Key;
 				ATinyHero* InjuredObject = Cast<ATinyHero>(ATemp);
 				if (InjuredObject)
 				{

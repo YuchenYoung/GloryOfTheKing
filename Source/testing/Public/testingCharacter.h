@@ -4,8 +4,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "MyHealthComponent.h"
-#include <map>
-#include <vector>
+#include "Map.h"
 #include "testingCharacter.generated.h"
 
 using namespace UM;
@@ -48,8 +47,8 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UDecalComponent* CursorToWorld;
 
-	map<AActor*, int> mWillAttackByEffects;
-	vector<float>vLevelLib;
+	TMap<AActor*, int32> mWillAttackByEffects;
+	TArray<float>vLevelLib;
 	UPROPERTY(EditDefaultsOnly, Category = "Params")
 	float fDamageRadius;
 	bool bIsAttackByEffects;
