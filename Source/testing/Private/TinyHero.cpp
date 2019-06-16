@@ -37,7 +37,7 @@ ATinyHero::ATinyHero()
 
 	fCauseDamage = 0.005f;
 	bIsAttacking = false;
-	bInMySide = false;
+
 }
 
 // Called when the game starts or when spawned
@@ -53,6 +53,11 @@ void ATinyHero::BeginPlay()
 		MoveToNextPatrolPoint();
 	}
 	*/
+}
+
+void ATinyHero::SetDefaultSide(bool bSide)
+{
+	bInMySide = bSide;
 }
 
 void ATinyHero::OnPawnSeen(APawn* SeenPawn)
@@ -126,6 +131,7 @@ FVector ATinyHero::GetNextPathPoint()
 void ATinyHero::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
 
 	/*
 	float DistanceToTarget = (GetActorLocation() - NextPathPoint).Size();
