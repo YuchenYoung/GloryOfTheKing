@@ -37,6 +37,7 @@ ATinyHero::ATinyHero()
 
 	fCauseDamage = 0.005f;
 	bIsAttacking = false;
+	bMoveToTower = true;
 
 }
 
@@ -63,14 +64,14 @@ void ATinyHero::SetDefaultSide(bool bSide)
 void ATinyHero::OnPawnSeen(APawn* SeenPawn)
 {
 	if (SeenPawn == nullptr) return;
-	DrawDebugSphere(GetWorld(), SeenPawn->GetActorLocation(), 32.0f, 12, FColor::Red, false, 10.0f);
+	//DrawDebugSphere(GetWorld(), SeenPawn->GetActorLocation(), 32.0f, 12, FColor::Red, false, 10.0f);
 }
 
 
 void ATinyHero::OnNoiseHeard(APawn * NoiseInstigator, const FVector & Location, float Volume)
 {
 
-	DrawDebugSphere(GetWorld(), Location, 32.0f, 12, FColor::Green, false, 10.0f);
+	//DrawDebugSphere(GetWorld(), Location, 32.0f, 12, FColor::Green, false, 10.0f);
 	FVector Direction = Location - GetActorLocation();
 	Direction.Normalize();
 	FRotator NewLookAt = FRotationMatrix::MakeFromX(Direction).Rotator();

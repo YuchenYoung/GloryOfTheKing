@@ -30,8 +30,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Component")
 	UCapsuleComponent* OuterCapsuleComp;
 
-	UPROPERTY(EditInstanceOnly, Category = "AI")
-	bool bPatrol;
+	UPROPERTY(BlueprintReadWrite, Category = "MoveMent")
+	bool bMoveToTower;
 
 	UPROPERTY(EditInstanceOnly, Category = "AI", meta = (EditCondition = "bPatrol"))
 	AActor * FirstPatrolPoint;

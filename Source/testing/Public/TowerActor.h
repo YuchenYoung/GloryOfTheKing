@@ -30,7 +30,7 @@ protected:
 	map<AActor*, int> mWillAttack;
 
 public:
-	UPROPERTY(EditInstanceOnly, Category = "Side")
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Side")
 	bool bInMySide;
 
 public:	
