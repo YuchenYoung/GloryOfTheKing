@@ -96,8 +96,7 @@ AEnemyhero::AEnemyhero()
 	Skill1Time = 0;
 	Skill2Time = 0;
 	Skill3Time = 0;
-	int i = 0;
-	for (i = 0; i < 15; i++)
+	for (int i = 0; i < 15; i++)
 	{
 		vLevelLib.push_back(0.20f - 0.01 * i);
 	}

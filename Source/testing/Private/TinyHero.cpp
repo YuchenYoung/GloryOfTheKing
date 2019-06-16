@@ -5,7 +5,6 @@
 #include <map>
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
-//#include "testingGameMode.h"
 #include "MyGameModeBase.h"
 #include "MyHealthComponent.h"
 #include "Perception/PawnSensingComponent.h"
@@ -237,14 +236,13 @@ void ATinyHero::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
 
-	float Distance = (this->GetActorLocation() - OtherActor->GetActorLocation()).Size();
-	if (Distance > fDamageRadius) return;
-
 	if (mWillAttack.find(OtherActor) == mWillAttack.end())
 	{
 		AtestingCharacter* OtherHero = Cast<AtestingCharacter>(OtherActor);
 		if (OtherHero && OtherHero->bInMySide != this->bInMySide)
 		{
+			float Distance = (this->GetActorLocation() - OtherActor->GetActorLocation()).Size();
+			if (Distance > fDamageRadius) return;
 			mWillAttack.insert(pair<AActor*, int>(OtherActor, 1));
 			bIsAttacking = true;
 			return;
