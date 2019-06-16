@@ -16,7 +16,7 @@
 #include "testingCharacter.h"
 #include "TowerActor.h"
 #include "BossTower.h"
-#include "Net/UnrealNetwork.h"
+#include "Enemyhero.h"
 
 
 using namespace std;
@@ -165,6 +165,14 @@ void ATinyHero::Tick(float DeltaTime)
 					{
 						InjuredBoss->GetInjured(this, this->fCauseDamage);
 					}
+					else
+					{
+						AEnemyhero* InjuredAI = Cast<AEnemyhero>(ATemp);
+						if (InjuredAI)
+						{
+							InjuredAI->GetInjured(this, this->fCauseDamage);
+						}
+					}
 				}
 			}
 		}
@@ -202,7 +210,11 @@ bool ATinyHero::GetInjured(AActor* DamageSource, float fDamageval)
 	{
 		return false;
 	}
-
+	AEnemyhero* OtherAI = Cast<AEnemyhero>(DamageSource);
+	if (OtherAI && OtherAI->bInMySide == this->bInMySide)
+	{
+		return false;
+	}
 	TinyHealth->Damage(fDamageval, 1);
 	if (TinyHealth->JudgeDeath())
 	{

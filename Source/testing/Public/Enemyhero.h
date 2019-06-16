@@ -47,12 +47,13 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UDecalComponent* CursorToWorld;
 
-	map<AActor*, int> mWillAttackByEffects;
+	map<AActor*, int> mWillAttack;
 	vector<float>vLevelLib;
 
 	bool bIsAttackByEffects;
-	float fdamageByEffect1;
-	float fdamageByEffect2;
+	float fCauseDamage;
+	float fDamageByEffect1;
+	float fDamageByEffect2;
 	float fEffects3;
 	bool bEffect3;
 	float dEffect3;
@@ -75,15 +76,13 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = "Effects")
 	bool bCanEffect3;
 	UPROPERTY(BlueprintReadWrite, Category = "Side")
-	bool bInMyside;
+	bool bInMySide;
 
 public:
 
-	UFUNCTION()
-	void OnHealthChanged(UMyHealthComponent* HealthComp, float Health, float HealthDelta, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
-
+	
 	UFUNCTION(BlueprintCallable)
-	void GetInjured(AActor* DamageSource, float fDamageval);
+	bool GetInjured(AActor* DamageSource, float fDamageval);
 
 	UFUNCTION()
 	void OnLevelChanged();

@@ -9,6 +9,7 @@
 #include "testingCharacter.h"
 #include "TinyHero.h"
 #include "TowerActor.h"
+#include "Enemyhero.h"
 #include "GameFramework/DamageType.h"
 #include "MyGameModeBase.h"
 #include "Components/WidgetComponent.h"
@@ -114,6 +115,14 @@ void ABossTower::Tick(float DeltaTime)
 				{
 					InjuredTiny->GetInjured(this, this->fCauseDamage);
 				}
+				else
+				{
+					AEnemyhero* InjuredAI = Cast<AEnemyhero>(ATemp);
+					if (InjuredAI)
+					{
+						InjuredAI->GetInjured(this, this->fCauseDamage);
+					}
+				}
 			}
 		}
 	}
@@ -169,7 +178,11 @@ bool ABossTower::GetInjured(AActor* DamageSource, float fDamageval)
 	{
 		return false;
 	}
-
+	AEnemyhero* OtherAI = Cast<AEnemyhero>(DamageSource);
+	if (OtherAI && OtherAI->bInMySide == this->bInMySide)
+	{
+		return false;
+	}
 	TowerHealth->Damage(fDamageval, 1);
 	if (TowerHealth->JudgeDeath())
 	{

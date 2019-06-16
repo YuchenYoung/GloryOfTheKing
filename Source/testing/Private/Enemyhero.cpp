@@ -20,12 +20,16 @@
 #include "Perception/PawnSensingComponent.h"
 #include <map>
 #include "TinyHero.h"
-
-
-
+#include "testingCharacter.h"
+#include "TinyHero.h"
+#include "TowerActor.h"
+#include "BossTower.h"
 
 using namespace std;
 
+constexpr auto TIME_GOBACK = 2500;
+constexpr auto TIME_SKILL = 1500;
+constexpr auto TIME_RESTART = 2000;
 
 AEnemyhero::AEnemyhero()
 {
@@ -81,7 +85,9 @@ AEnemyhero::AEnemyhero()
 	PrimaryActorTick.bStartWithTickEnabled = true;
 	NoiseEmitterComponent = CreateDefaultSubobject<UPawnNoiseEmitterComponent>(TEXT("NoiseEmitter"));
 
-	bInMyside = false;
+	bInMySide = false;
+	bDied = false;
+
 	//set default money value
 	Money = 10000;
 	//set default attribution
@@ -106,6 +112,21 @@ void AEnemyhero::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	
+	if (RestartTime > 0)
+	{
+		if (RestartTime < TIME_RESTART)
+		{
+			RestartTime++;
+		}
+		else
+		{
+			SetActorLocation(FVector(1800, 1800, 243));
+			RestartTime = 0;
+			HeroHealth->InitialHealth();
+			SetActorHiddenInGame(false);
+		}
+	}
+
 	if (Skill1Time > 0)
 	{
 		if (Skill1Time < 250)
@@ -141,6 +162,7 @@ void AEnemyhero::Tick(float DeltaSeconds)
 			Skill3Time = 0;
 		}
 	}
+	/*
 	if (CursorToWorld != nullptr)
 	{
 		if (UHeadMountedDisplayFunctionLibrary::IsHeadMountedDisplayEnabled())
@@ -167,6 +189,7 @@ void AEnemyhero::Tick(float DeltaSeconds)
 			CursorToWorld->SetWorldRotation(CursorR);
 		}
 	}
+	*/
 	//UMyHealthComponent Myhealth;
 	//Myhealth.Damage(3);
 	if (Energy < 100.0f)
@@ -208,33 +231,48 @@ void AEnemyhero::Tick(float DeltaSeconds)
 	}
 }
 
-void AEnemyhero::OnHealthChanged(UMyHealthComponent* HealthComp, float Health, float HealthDelta, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
+
+
+bool AEnemyhero::GetInjured(AActor* DamageSource, float fDamageval)
 {
-	if (Health <= 0.0f && !bDied)
+	AtestingCharacter* OtherHero = Cast<AtestingCharacter>(DamageSource);
+	if (OtherHero && OtherHero->bInMySide == this->bInMySide)
 	{
-		//Die!
-		bDied = true;
-
-		GetMovementComponent()->StopMovementImmediately();
-		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		return false;
 	}
-}
-
-void AEnemyhero::GetInjured(AActor* DamageSource, float fDamageval)
-{
-	HeroHealth->Damage(fDamageval, Defense);
-
-	if (HeroHealth->JudgeDeath() && !bDied)
+	ATinyHero* OtherTiny = Cast<ATinyHero>(DamageSource);
+	if (OtherTiny && OtherTiny->bInMySide == this->bInMySide)
+	{
+		return false;
+	}
+	ATowerActor* OtherTower = Cast<ATowerActor>(DamageSource);
+	if (OtherTower && OtherTower->bInMySide == this->bInMySide)
+	{
+		return false;
+	}
+	ABossTower* OtherBoss = Cast<ABossTower>(DamageSource);
+	if (OtherBoss && OtherBoss->bInMySide == this->bInMySide)
+	{
+		return false;
+	}
+	AEnemyhero* OtherAI = Cast<AEnemyhero>(DamageSource);
+	if (OtherAI && OtherAI->bInMySide == this->bInMySide)
+	{
+		return false;
+	}
+	HeroHealth->Damage(fDamageval, 1);
+	if (HeroHealth->JudgeDeath())
 	{
 		Die();
 	}
+	return true;
 }
 
 void AEnemyhero::OnLevelChanged()
 {
 	Defense *= Level * vLevelLib[Level - 2] + 1;
 	aEnergy *= Level * vLevelLib[Level - 2] + 1;
-	fdamageByEffect2 *= Level * vLevelLib[Level - 2] + 1;
+	fDamageByEffect2 *= Level * vLevelLib[Level - 2] + 1;
 	if (Level > 1)bCanEffect1 = true;
 	if (Level > 2)
 	{
@@ -257,7 +295,10 @@ void AEnemyhero::BeginPlay()
 
 void AEnemyhero::Die()
 {
-	PlayDeathEffects();
+	RestartTime = 1;
+	bDied = true;
+	SetActorHiddenInGame(true);
+	//PlayDeathEffects();
 	//Destroy();
 }
 
@@ -292,14 +333,30 @@ void AEnemyhero::PlayEffects2()
 		Skill2Time = 1;
 		if (bIsAttackByEffects)
 		{
-			map<AActor*, int>::iterator iToAttackByEffects1;
-			for (iToAttackByEffects1 = mWillAttackByEffects.begin(); iToAttackByEffects1 != mWillAttackByEffects.end(); iToAttackByEffects1++)
+			map<AActor*, int>::iterator iToAttack;
+			for (iToAttack = mWillAttack.begin(); iToAttack != mWillAttack.end(); iToAttack++)
 			{
-				AActor* ATemp = iToAttackByEffects1->first;
-				ATinyHero* InjuredObject = Cast<ATinyHero>(ATemp);
-				if (InjuredObject)
+				AActor* ATemp = iToAttack->first;
+				AtestingCharacter* InjuredHero = Cast<AtestingCharacter>(ATemp);
+				if (InjuredHero)
 				{
-					InjuredObject->GetInjured(this, this->fdamageByEffect1);
+					InjuredHero->GetInjured(this, this->fDamageByEffect2);
+				}
+				else
+				{
+					ATowerActor* InjuredTower = Cast<ATowerActor>(ATemp);
+					if (InjuredTower)
+					{
+						InjuredTower->GetInjured(this, this->fDamageByEffect2);
+					}
+					else
+					{
+						ABossTower* InjuredBoss = Cast<ABossTower>(ATemp);
+						if (InjuredBoss)
+						{
+							InjuredBoss->GetInjured(this, this->fDamageByEffect2);
+						}
+					}
 				}
 			}
 		}
@@ -356,7 +413,7 @@ void AEnemyhero::MoveRight(float val)
 void AEnemyhero::OnNoiseHeard(APawn* NoiseInstigator, const FVector& Location, float Volume)
 {
 
-	DrawDebugSphere(GetWorld(), Location, 32.0f, 12, FColor::Green, false, 10.0f);
+	//DrawDebugSphere(GetWorld(), Location, 32.0f, 12, FColor::Green, false, 10.0f);
 	FVector Direction = Location - GetActorLocation();
 	Direction.Normalize();
 	FRotator NewLookAt = FRotationMatrix::MakeFromX(Direction).Rotator();
