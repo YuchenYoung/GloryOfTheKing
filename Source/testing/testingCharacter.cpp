@@ -101,7 +101,7 @@ AtestingCharacter::AtestingCharacter()
 	AttackValue = 20.0f;
 	Defense = 1.0f;
 	Energy = 100.0f;
-	aEnergy = 0.01f;
+	aEnergy = 0.001f;
 	Level = 1;
 	dLevel = 0.0f;
 	aLevel = 0.3f;
@@ -109,7 +109,7 @@ AtestingCharacter::AtestingCharacter()
 	Result_Hero = 0;
 	Result_Tower = 0;
 	fdamageByEffect1 =20.0f;
-	fdamageByEffect2 = 25.0f;
+	fdamageByEffect2 =100.0f;
 	fEffects3 = 0.1f;
 	bEffect3 = false;
 	dEffect3 = 0.0f;
@@ -432,7 +432,6 @@ void AtestingCharacter::PlayEffects1()
 		if (Energy < 10.0f || !bCanEffect1)return;
 		UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectQ, GetActorLocation());
 		Energy -= 10.0f;
-		Skill1Time = 1;
 	}
 	
 }
@@ -445,7 +444,6 @@ void AtestingCharacter::PlayEffects2()
 		if (Energy < 10.0f || !bCanEffect2)return;
 		UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectW, GetActorLocation());
 		Energy -= 10.0f;
-		Skill2Time=1;
 		if (bIsAttackByEffects)
 		{
 			map<AActor*, int>::iterator iToAttackByEffects1;
@@ -455,7 +453,7 @@ void AtestingCharacter::PlayEffects2()
 				ATinyHero* InjuredObject = Cast<ATinyHero>(ATemp);
 				if (InjuredObject)
 				{
-					InjuredObject->GetInjured(this, this->fdamageByEffect1);
+					InjuredObject->GetInjured(this, this->fdamageByEffect2);
 				}
 			}
 		}
@@ -471,7 +469,6 @@ void AtestingCharacter::PlayEffects3()
 		UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectE, GetActorLocation());
 		bEffect3 = true;
 		Energy -= 30.0f;
-		Skill3Time = 1;
 	}
 }
 
