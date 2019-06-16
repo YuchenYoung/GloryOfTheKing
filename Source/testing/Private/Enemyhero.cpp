@@ -108,7 +108,7 @@ void AEnemyhero::Tick(float DeltaSeconds)
 	
 	if (Skill1Time > 0)
 	{
-		if (Skill1Time < 150)
+		if (Skill1Time < 250)
 		{
 			Skill1Time++;
 		}
@@ -120,7 +120,7 @@ void AEnemyhero::Tick(float DeltaSeconds)
 
 	if (Skill2Time > 0)
 	{
-		if (Skill2Time < 150)
+		if (Skill2Time < 200)
 		{
 			Skill2Time++;
 		}
@@ -363,10 +363,9 @@ void AEnemyhero::OnNoiseHeard(APawn* NoiseInstigator, const FVector& Location, f
 	NewLookAt.Pitch = 0.0f;
 	NewLookAt.Roll = 0.0f;
 	SetActorRotation(NewLookAt);
-	PlayEffects2();
 	PlayEffects3();
+	PlayEffects2();
 	PlayEffects1();
 }
-
 
 
