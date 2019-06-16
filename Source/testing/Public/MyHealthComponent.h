@@ -39,15 +39,5 @@ public:
 
 	float HealthLeft();
 
-	/*
-	UFUNCTION()
-	void HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
-	*/
-	/*
-	UPROPERTY(BlueprintAssignable,Category="Events")
-	FOnHealthChangedSignature OnHealthChanged;
-	*/
-	/*const class UDamageType* DefaultDamageType;
-	class AController* DefaultConTroller;*/
 
 };

@@ -148,7 +148,6 @@ void ATowerActor::Tick(float DeltaTime)
 			if (InjuredHero)
 			{
 				InjuredHero->GetInjured(this, this->fCauseDamage);
-				//InjuredHero->HeroHealth->HandleTakeAnyDamage(InjuredHero, fCauseDamage, InjuredHero->HeroHealth->DefaultDamageType, InjuredHero->HeroHealth->DefaultConTroller, this);
 			}
 			else
 			{

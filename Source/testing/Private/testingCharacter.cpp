@@ -269,29 +269,6 @@ void AtestingCharacter::Tick(float DeltaSeconds)
 		}
 	}
 
-	/*
-	if (SlashingSword)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Health is %f"), HeroHealth->Health);
-		UE_LOG(LogTemp, Warning, TEXT("DefaultHealth is %f"), HeroHealth->DefaultHealth);
-	}
-	*/
-
-}
-
-/*
-void AtestingCharacter::OnHealthChanged(UMyHealthComponent* HealthComp, float Health, float HealthDelta, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
-{
-	if (Health <= 0.0f && !bDied)
-	{
-		//Die!
-		bDied = true;
-
-		GetMovementComponent()->StopMovementImmediately();
-		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	}
-}
-*/
 
 bool AtestingCharacter::GetInjured(AActor* DamageSource, float fDamageval)
 {

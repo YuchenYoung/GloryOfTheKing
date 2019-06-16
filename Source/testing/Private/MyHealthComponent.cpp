@@ -26,14 +26,7 @@ void UMyHealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
-	/*
-	AActor* MyOwner = GetOwner();
-	if (MyOwner)
-	{
-		MyOwner->OnTakeAnyDamage.AddDynamic(this, &UMyHealthComponent::HandleTakeAnyDamage);
-	}
-	*/
+	
 	 Health = DefaultHealth;
 
 }

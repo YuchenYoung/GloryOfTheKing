@@ -63,8 +63,6 @@ private:
 	int32 Skill3Time;
 	int32 RestartTime;
 
-	
-
 public:
 	int32 direction;
 
@@ -82,7 +80,6 @@ public:
 
 public:
 
-	
 	UFUNCTION(BlueprintCallable)
 	bool GetInjured(AActor* DamageSource, float fDamageval);
 
@@ -132,12 +129,5 @@ protected:
 	void PlayEffects3();
 	void PlayEffects4();
 
-public:
-	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
-
-	void MoveForward(float val);
-	void MoveRight(float val);
-
-	/* forward 1  backward 2  left 3  right 4  */
 };
 

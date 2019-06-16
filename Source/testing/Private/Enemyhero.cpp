@@ -162,36 +162,7 @@ void AEnemyhero::Tick(float DeltaSeconds)
 			Skill3Time = 0;
 		}
 	}
-	/*
-	if (CursorToWorld != nullptr)
-	{
-		if (UHeadMountedDisplayFunctionLibrary::IsHeadMountedDisplayEnabled())
-		{
-			if (UWorld * World = GetWorld())
-			{
-				FHitResult HitResult;
-				FCollisionQueryParams Params(NAME_None, FCollisionQueryParams::GetUnknownStatId());
-				FVector StartLocation = TopDownCameraComponent->GetComponentLocation();
-				FVector EndLocation = TopDownCameraComponent->GetComponentRotation().Vector() * 2000.0f;
-				Params.AddIgnoredActor(this);
-				World->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_Visibility, Params);
-				FQuat SurfaceRotation = HitResult.ImpactNormal.ToOrientationRotator().Quaternion();
-				CursorToWorld->SetWorldLocationAndRotation(HitResult.Location, SurfaceRotation);
-			}
-		}
-		else if (APlayerController * PC = Cast<APlayerController>(GetController()))
-		{
-			FHitResult TraceHitResult;
-			PC->GetHitResultUnderCursor(ECC_Visibility, true, TraceHitResult);
-			FVector CursorFV = TraceHitResult.ImpactNormal;
-			FRotator CursorR = CursorFV.Rotation();
-			CursorToWorld->SetWorldLocation(TraceHitResult.Location);
-			CursorToWorld->SetWorldRotation(CursorR);
-		}
-	}
-	*/
-	//UMyHealthComponent Myhealth;
-	//Myhealth.Damage(3);
+	
 	if (Energy < 100.0f)
 	{
 		Energy += aEnergy;
@@ -304,8 +275,6 @@ void AEnemyhero::Die()
 	RestartTime = 1;
 	bDied = true;
 	SetActorHiddenInGame(true);
-	//PlayDeathEffects();
-	//Destroy();
 }
 
 void AEnemyhero::PlayDeathEffects()
@@ -388,32 +357,6 @@ void AEnemyhero::PlayEffects4()
 {
 	UGameplayStatics::SpawnEmitterAtLocation(this, SkillEffectR, GetActorLocation());
 }
-
-void AEnemyhero::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-	PlayerInputComponent->BindAction("Keyboard1", IE_Pressed, this, &AEnemyhero::PlayEffects1);
-	PlayerInputComponent->BindAction("Keyboard2", IE_Pressed, this, &AEnemyhero::PlayEffects2);
-	PlayerInputComponent->BindAction("Keyboard3", IE_Pressed, this, &AEnemyhero::PlayEffects3);
-	PlayerInputComponent->BindAction("Keyboard4", IE_Pressed, this, &AEnemyhero::PlayEffects4);
-
-	PlayerInputComponent->BindAxis("MoveForward", this, &AEnemyhero::MoveForward);
-	PlayerInputComponent->BindAxis("MoveRight", this, &AEnemyhero::MoveRight);
-
-}
-
-void AEnemyhero::MoveForward(float val)
-{
-	AddMovementInput(GetActorForwardVector() * val);
-}
-
-void AEnemyhero::MoveRight(float val)
-{
-	AddMovementInput(GetActorRightVector() * val);
-}
-
-
 
 
 void AEnemyhero::OnNoiseHeard(APawn* NoiseInstigator, const FVector& Location, float Volume)

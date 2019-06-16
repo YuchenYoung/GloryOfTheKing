@@ -57,14 +57,12 @@ void ATinyHero::SetDefaultSide(bool bSide)
 void ATinyHero::OnPawnSeen(APawn* SeenPawn)
 {
 	if (SeenPawn == nullptr) return;
-	//DrawDebugSphere(GetWorld(), SeenPawn->GetActorLocation(), 32.0f, 12, FColor::Red, false, 10.0f);
 }
 
 
 void ATinyHero::OnNoiseHeard(APawn * NoiseInstigator, const FVector & Location, float Volume)
 {
 
-	//DrawDebugSphere(GetWorld(), Location, 32.0f, 12, FColor::Green, false, 10.0f);
 	FVector Direction = Location - GetActorLocation();
 	Direction.Normalize();
 	FRotator NewLookAt = FRotationMatrix::MakeFromX(Direction).Rotator();
@@ -73,19 +71,7 @@ void ATinyHero::OnNoiseHeard(APawn * NoiseInstigator, const FVector & Location, 
 	SetActorRotation(NewLookAt);
 
 
-	/*AController* Controller = GetController();
-	if (Controller)
-	{
-		Controller->StopMovement();
-	}*/
-
-	/*
-	AController* Controller = GetController();
-	if (Controller)
-	{
-		Controller->StopMovement();
-	}
-	*/
+	
 }
 void ATinyHero::PlayEffects()
 {
@@ -93,33 +79,7 @@ void ATinyHero::PlayEffects()
 
 }
 
-/*
-FVector ATinyHero::GetNextPathPoint()
-{
-	ABossTower* GoalTower;
-	GoalTower = CreateDefaultSubobject<ABossTower>(TEXT("GoalTower"));
-	for (FConstPawnIterator It = GetWorld()->GetPawnIterator(); It; ++It)
-	{
-		APawn* TempPawn = It->Get();
-		ABossTower* TempTower = Cast<ABossTower>(TempPawn);
-		if (TempTower)
-		{
-			GoalTower = TempTower;
-			break;
-		}
-	}
-	if (GoalTower)
-	{
-		UNavigationPath* NavPath = UNavigationSystemV1::FindPathToActorSynchronously(this, GetActorLocation(), GoalTower);
-		if (NavPath->PathPoints.Num() > 1)
-		{
-			return NavPath->PathPoints[1];
-		}
-		else return GetActorLocation();
-	}
-	return GetActorLocation();
-}
-*/
+
 
 // Called every frame
 void ATinyHero::Tick(float DeltaTime)
@@ -127,17 +87,7 @@ void ATinyHero::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 
-	/*
-	float DistanceToTarget = (GetActorLocation() - NextPathPoint).Size();
-	if (DistanceToTarget <= 10.f)
-	{
-		NextPathPoint = GetNextPathPoint();
-	}
-	else
-	{
-		UNavigationSystemV1::SimpleMoveToLocation(GetController(), NextPathPoint);;
-	}
-	*/
+	
 
 	if (bIsAttacking)
 	{
@@ -179,14 +129,6 @@ void ATinyHero::Tick(float DeltaTime)
 	}
 }
 
-// Called to bind functionality to input
-void ATinyHero::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-
-	
-}
 
 bool ATinyHero::GetInjured(AActor* DamageSource, float fDamageval)
 {
@@ -290,22 +232,4 @@ void ATinyHero::NotifyActorEndOverlap(AActor* OtherActor)
 		bIsAttacking = false;
 	}
 }
-
-/*
-void ATinyHero::MoveToNextPatrolPoint()
-{
-	if (CurrentPatrolPoint == nullptr || CurrentPatrolPoint == SecondPatrolPoint)
-	{
-		CurrentPatrolPoint = FirstPatrolPoint;
-	}
-	else
-	{
-		CurrentPatrolPoint = SecondPatrolPoint;
-	}
-	UNavigationSystem::SimpleMoveToActor(GetController(), CurrentPatrolPoint);
-
-}
-*/
-
-
 
