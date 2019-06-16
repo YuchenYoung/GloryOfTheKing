@@ -33,7 +33,6 @@ ABossTower::ABossTower(const FObjectInitializer& ObjectInitializer) : Super(Obje
 	AttackCapsulecomp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 	AttackCapsulecomp->SetupAttachment(RootComponent);
 	TowerHealth = CreateDefaultSubobject<UMyHealthComponent>(TEXT("TowerHealth"));
-	TowerHealth->SetIsReplicated(true);
 	MyBloodBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("MyBloodBar"));
 	MyBloodBar->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	UClass* Widget = LoadClass<UUserWidget>(NULL, TEXT("WidgetBlueprint'/Game/TopDownCPP/Blueprints/WBP_TowerHealth.WBP_TowerHealth_C'"));
@@ -44,17 +43,14 @@ ABossTower::ABossTower(const FObjectInitializer& ObjectInitializer) : Super(Obje
 	bIsAttacking = false;
 	bruined = false;
 	bInMySide = true;
-	//for multiply players
-	bReplicates = true;
-	SetReplicates(true);
-	SetReplicateMovement(true);
 }
 
 // Called when the game starts or when spawned
 void ABossTower::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	TowerHealth->DefaultHealth = 1000.0f;
+	TowerHealth->Health = 1000.0f;
 	UUserWidget* CurrentWidget = MyBloodBar->GetUserWidgetObject();
 	if (CurrentWidget != NULL)
 	{
