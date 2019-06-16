@@ -90,7 +90,7 @@ public:
 	void OnHealthChanged(UMyHealthComponent* HealthComp, float Health, float HealthDelta, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 	*/
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	bool GetInjured(AActor* DamageSource, float fDamageval);
 
 	UFUNCTION()
