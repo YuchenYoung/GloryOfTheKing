@@ -23,6 +23,10 @@
 
 using namespace std;
 
+constexpr auto TIME_GOBACK = 500;
+constexpr auto TIME_SKILL = 150;
+constexpr auto TIME_RESTART = 300;
+
 AtestingCharacter::AtestingCharacter()
 {
 	AttackCapsulecomp = CreateDefaultSubobject<UCapsuleComponent>(TEXT("AttackingCapsulecomp"));
@@ -112,10 +116,9 @@ AtestingCharacter::AtestingCharacter()
 	fEffects4 = 30.0f;
 
 	//set vLevelLib's default value
-	int i = 0;
-	for (i = 0; i < 15; i++) 
+	for (int i = 0; i < 15; i++) 
 	{
-		vLevelLib.push_back(0.20f-0.01*i);
+		vLevelLib.push_back(0.20f - 0.01 * i);
 	}
 }
 
@@ -125,7 +128,7 @@ void AtestingCharacter::Tick(float DeltaSeconds)
 
 	if (RestartTime > 0)
 	{
-		if (RestartTime < 100)
+		if (RestartTime < TIME_RESTART)
 		{
 			RestartTime++;
 		}
@@ -140,7 +143,7 @@ void AtestingCharacter::Tick(float DeltaSeconds)
 	}
 	if (Skill1Time > 0)
 	{
-		if (Skill1Time < 150)
+		if (Skill1Time < TIME_SKILL)
 		{
 			Skill1Time++;
 		}
@@ -153,7 +156,7 @@ void AtestingCharacter::Tick(float DeltaSeconds)
 
 	if (Skill2Time > 0)
 	{
-		if (Skill2Time < 150)
+		if (Skill2Time < TIME_SKILL)
 		{
 			Skill2Time++;
 		}
@@ -165,13 +168,25 @@ void AtestingCharacter::Tick(float DeltaSeconds)
 
 	if (Skill3Time > 0)
 	{
-		if (Skill3Time < 150)
+		if (Skill3Time < TIME_SKILL)
 		{
 			Skill3Time++;
 		}
 		else
 		{
 			Skill3Time = 0;
+		}
+	}
+
+	if (BackTime > 0)
+	{
+		if (BackTime < TIME_GOBACK)
+		{
+			BackTime++;
+		}
+		else
+		{
+			BackTime = 0;
 		}
 	}
 
@@ -460,12 +475,15 @@ void AtestingCharacter::PlayEffects3()
 	}
 }
 
-
-
-
-
-
-
+void AtestingCharacter::BackToBase()
+{
+	if (BackTime == 0)
+	{
+		BackTime = 1;
+		Energy -= 50.0f;
+		SetActorLocation(FVector(-1775, -1470, 243));
+	}
+}
 
 void AtestingCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -474,7 +492,7 @@ void AtestingCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAction("Keyboard1", IE_Pressed, this, &AtestingCharacter::PlayEffects1);
 	PlayerInputComponent->BindAction("Keyboard2", IE_Pressed, this, &AtestingCharacter::PlayEffects2);
 	PlayerInputComponent->BindAction("Keyboard3", IE_Pressed, this, &AtestingCharacter::PlayEffects3);
-
+	PlayerInputComponent->BindAction("KeyboardQ", IE_Pressed, this, &AtestingCharacter::BackToBase);
 
 }
 

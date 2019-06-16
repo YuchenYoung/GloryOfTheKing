@@ -8,15 +8,14 @@
 #include <vector>
 #include "testingCharacter.generated.h"
 
+using namespace UM;
+using namespace UF;
+using namespace std;
 
 
 class UPawnNoiseEmitterComponent;
 class UMyhealthComponent;
 class UCapsuleComponent;
-
-using namespace UM;
-using namespace UF;
-using namespace std;
 
 UCLASS(config = Game)
 class AtestingCharacter : public ACharacter
@@ -64,6 +63,7 @@ private:
 	int32 Skill1Time;
 	int32 Skill2Time;
 	int32 Skill3Time;
+	int32 BackTime;
 
 protected:
 
@@ -77,11 +77,11 @@ public:
 	bool bInMySide;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Effects")
-		bool bCanEffect1;
+	bool bCanEffect1;
 	UPROPERTY(BlueprintReadWrite, Category = "Effects")
-		bool bCanEffect2;
+	bool bCanEffect2;
 	UPROPERTY(BlueprintReadWrite, Category = "Effects")
-		bool bCanEffect3;
+	bool bCanEffect3;
 
 public:
 	
@@ -147,6 +147,7 @@ protected:
 	void PlayEffects1();
 	void PlayEffects2();
 	void PlayEffects3();
+	void BackToBase();
 
 public:
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;

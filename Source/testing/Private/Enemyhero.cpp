@@ -12,14 +12,14 @@
 #include "Materials/Material.h"
 #include "Engine/World.h"
 #include "MyHealthComponent.h"
-#include"Components/PawnNoiseEmitterComponent.h"
+#include "Components/PawnNoiseEmitterComponent.h"
 #include "Components/InputComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/CapsuleComponent.h"
 #include "DrawDebugHelpers.h"
 #include "Perception/PawnSensingComponent.h"
 #include <map>
-#include"TinyHero.h"
+#include "TinyHero.h"
 
 
 
@@ -81,7 +81,7 @@ AEnemyhero::AEnemyhero()
 	PrimaryActorTick.bStartWithTickEnabled = true;
 	NoiseEmitterComponent = CreateDefaultSubobject<UPawnNoiseEmitterComponent>(TEXT("NoiseEmitter"));
 
-
+	bInMyside = false;
 	//set default money value
 	Money = 10000;
 	//set default attribution
@@ -96,8 +96,7 @@ AEnemyhero::AEnemyhero()
 	Skill1Time = 0;
 	Skill2Time = 0;
 	Skill3Time = 0;
-	int i = 0;
-	for (i = 0; i < 15; i++)
+	for (int i = 0; i < 15; i++)
 	{
 		vLevelLib.push_back(0.20f - 0.01 * i);
 	}
