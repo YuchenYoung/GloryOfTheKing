@@ -332,6 +332,8 @@ void AtestingCharacter::AddResult_Tiny()
 void AtestingCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	SlashingSword = 0;
 }
 
 void AtestingCharacter::Die()

@@ -10,6 +10,8 @@
 #include "TinyHero.h"
 #include "BossTower.h"
 #include "GameFramework/DamageType.h"
+#include "Components/WidgetComponent.h"
+#include "Components/ProgressBar.h"
 
 // Sets default values
 ATowerActor::ATowerActor()
@@ -30,6 +32,11 @@ ATowerActor::ATowerActor()
 	AttackCapsulecomp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 	AttackCapsulecomp->SetupAttachment(RootComponent);
 	TowerHealth = CreateDefaultSubobject<UMyHealthComponent>(TEXT("TowerHealth"));
+	MyBloodBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("MyBloodBar"));
+	MyBloodBar->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	UClass* Widget = LoadClass<UUserWidget>(NULL, TEXT("WidgetBlueprint'/Game/TopDownCPP/Blueprints/WBP_TowerHealth.WBP_TowerHealth_C'"));
+	MyBloodBar->SetWidgetClass(Widget);
+	MyBloodBar->SetIsReplicated(true);
 
 	fCauseDamage = 0.005;
 	bIsAttacking = false;
@@ -43,6 +50,17 @@ void ATowerActor::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	UUserWidget* CurrentWidget = MyBloodBar->GetUserWidgetObject();
+	if (CurrentWidget != NULL)
+	{
+		HPBarProgress = Cast<UProgressBar>(CurrentWidget->GetWidgetFromName(TEXT("TowerBar")));
+
+		if (HPBarProgress != NULL)
+		{
+			HPBarProgress->SetPercent(1.0f);
+		}
+	}
+
 }
 
 void ATowerActor::PlayEffects()
@@ -73,15 +91,16 @@ bool ATowerActor::GetInjured(AActor* DamageSource, float fDamageval)
 	{
 		Collapse();
 	}
+	if (HPBarProgress != NULL)
+	{
+		HPBarProgress->SetPercent(TowerHealth->HealthLeft());
+	}
+
 	return true;
 }
 
 void ATowerActor::Collapse()
 {
-	if (Role < ROLE_Authority)
-	{
-		ServerCollapse();
-	}
 	// CollapseEffect();
 	Meshcomp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Capsulecomp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -90,15 +109,6 @@ void ATowerActor::Collapse()
 	bruined = true;
 	//PlayCollapseEffects();
 	Destroy();
-}
-
-void ATowerActor::ServerCollapse_Implementation()
-{
-	Collapse();
-}
-bool ATowerActor::ServerCollapse_Validate()
-{
-	return true;
 }
 
 // Called every frame

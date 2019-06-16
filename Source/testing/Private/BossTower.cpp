@@ -75,11 +75,6 @@ void ABossTower::PlayEffects()
 
 void ABossTower::Collapse()
 {
-	if (Role < ROLE_Authority)
-	{
-		ServerCollapse();
-	}
-	
 	// CollapseEffect();
 	Meshcomp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Capsulecomp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -92,15 +87,6 @@ void ABossTower::Collapse()
 		GM->JudgeGameOver(bInMySide);
 	}
 	Destroy();
-}
-
-void ABossTower::ServerCollapse_Implementation()
-{
-	Collapse();
-}
-bool ABossTower::ServerCollapse_Validate()
-{
-	return true;
 }
 
 // Called every frame
@@ -175,11 +161,6 @@ void ABossTower::NotifyActorEndOverlap(AActor* OtherActor)
 
 bool ABossTower::GetInjured(AActor* DamageSource, float fDamageval)
 {
-	if (Role < ROLE_Authority)
-	{
-		ServerGetInjured(DamageSource, fDamageval);
-	}
-	
 	AtestingCharacter* OtherHero = Cast<AtestingCharacter>(DamageSource);
 	if (OtherHero && OtherHero->bInMySide == this->bInMySide)
 	{
@@ -201,14 +182,5 @@ bool ABossTower::GetInjured(AActor* DamageSource, float fDamageval)
 	{
 		HPBarProgress->SetPercent(TowerHealth->HealthLeft());
 	}
-	return true;
-}
-
-void ABossTower::ServerGetInjured_Implementation(AActor * DamageSource, float fDamageval)
-{
-	GetInjured(DamageSource, fDamageval);
-}
-bool ABossTower::ServerGetInjured_Validate(AActor * DamageSource, float fDamageval)
-{
 	return true;
 }
